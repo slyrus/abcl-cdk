@@ -1,30 +1,10 @@
 
+abcl-cdk-hacking, Some code for integrating CDK into ABCL and calling
+various CDK routines.
 
-Prerequisites:
+By Cyrus Harmon <ch-lisp@bobobeach.com>, March 2012. See COPYRIGHT
+file for license details.
 
-    (require 'abcl-contrib)
-    (require 'abcl-asdf)
-    (require :extensible-sequences)
-    (require :java-collections)
-
-
-    (abcl-asdf:resolve-dependencies "org.apache.maven" "maven-aether-provider" "3.0.4")
-
-    (abcl-asdf:resolve-dependencies "org.apache.maven.wagon"
-                                    "providers" "1.0-beta-7")
-
-    (abcl-asdf:resolve-dependencies "org.apache.maven.wagon" "wagon-http" "2.2")
-
-    (abcl-asdf:resolve-dependencies "org.apache.maven.wagon" "wagon-providers" "2.2")
-
-
-    (abcl-asdf:resolve-dependencies "org.freehep" "freehep-graphics2d" "2.1.1")
-    (abcl-asdf:resolve-dependencies "org.freehep" "freehep-graphicsio-pdf" "2.1.1")
-    (abcl-asdf:resolve-dependencies "org.freehep" "freehep-graphicsio-svg" "2.1.1")
-
-    (abcl-asdf:resolve-dependencies "org.openscience" "cdk" "1.4.7")
-
-    (abcl-asdf:resolve-dependencies "junit" "junit" "3.8.2")
 
 
 
