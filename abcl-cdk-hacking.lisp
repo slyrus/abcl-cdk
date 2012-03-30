@@ -27,22 +27,7 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (cl:require :extensible-sequences)
-  (cl:require :java-collections))
-
-(cl:defpackage :abcl-cdk-hacking
-  (:use :common-lisp))
-
 (cl:in-package :abcl-cdk-hacking)
-
-(defmacro jimport (java-package class &optional package)
-  `(defparameter ,(apply #'intern class
-                         (when package (list package)))
-     (concatenate 'string (symbol-name (quote ,java-package))
-                  "."
-                  (symbol-name (quote ,class)))))
 
 (jimport |org.openscience.cdk.smiles| |SmilesParser|)
 (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
@@ -58,7 +43,6 @@
 (jimport |org.openscience.cdk.renderer.visitor| |AWTDrawVisitor|)
 (jimport |org.openscience.cdk.layout| |StructureDiagramGenerator|)
 
-(jimport |java.util| |Vector|)
 (jimport |java.awt| |Rectangle|)
 (jimport |java.awt| |Dimension|)
 (jimport |java.awt.geom| |Rectangle2D$Double|)
@@ -72,11 +56,6 @@
 
 (defun getmol (smiles-string)
   (java:jcall "parseSmiles" *smiles-parser* smiles-string))
-
-(defun jlist (&rest initial-contents)
-  (sequence:make-sequence-like
-   (java:jnew |Vector|) (length initial-contents)
-   :initial-contents initial-contents))
 
 (defun mol-to-svg (mol pathname)
   (with-open-file (out-stream pathname :direction :output
@@ -128,8 +107,10 @@
                   java:+true+)
       (java:jcall "endExport" vg))))
 
-(defparameter *tam* (getmol "CCC(=C(C1=CC=CC=C1)C2=CC=C(C=C2)OCCN(C)C)C3=CC=CC=C3"))
+(defparameter *caffeine*
+  (java:jcall "parseSmiles" *smiles-parser* "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"))
 
-(mol-to-svg *tam* "/tmp/tam.svg")
+(mol-to-svg *caffeine* "/tmp/caffeine.svg")
 
-(mol-to-pdf *tam* "/tmp/tam.pdf")
+(mol-to-pdf *caffeine* "/tmp/caffeine.pdf")
+

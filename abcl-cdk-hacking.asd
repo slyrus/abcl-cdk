@@ -1,7 +1,9 @@
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (cl:require 'abcl-contrib)
-  (cl:require 'abcl-asdf))
+  (cl:require 'abcl-asdf)
+  (cl:require 'extensible-sequences)
+  (cl:require 'java-collections))
 
 (asdf:defsystem :abcl-cdk-hacking
   :name "abcl-cdk-hacking"
@@ -12,7 +14,9 @@
   ((:mvn "org.freehep/freehep-graphics2d" :version "2.1.1")
    (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.1.1")
    (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.1.1")
-   (:mvn "org.openscience/cdk" :version "1.4.7")
+   (:mvn "org.openscience.cdk/cdk" :version "1.4.8-SNAPSHOT")
+   (:file "package")
+   (:file "utilities")
    (:file "abcl-cdk-hacking")))
 
 (cl:defpackage #:abcl-cdk-hacking-config (:export #:*base-directory*))
