@@ -1,4 +1,4 @@
-;;; file: abcl-cdk-hacking.lisp
+;;; file: abcl-cdk.lisp
 ;;;
 ;;; Copyright (c) 2012 Cyrus Harmon (ch-lisp@bobobeach.com)
 ;;; All rights reserved.
@@ -27,7 +27,7 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(cl:in-package :abcl-cdk-hacking)
+(cl:in-package :abcl-cdk)
 
 (jimport |org.openscience.cdk.smiles| |SmilesParser|)
 (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)

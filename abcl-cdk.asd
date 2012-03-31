@@ -5,8 +5,8 @@
   (cl:require 'extensible-sequences)
   (cl:require 'java-collections))
 
-(asdf:defsystem :abcl-cdk-hacking
-  :name "abcl-cdk-hacking"
+(asdf:defsystem :abcl-cdk
+  :name "abcl-cdk"
   :author "Cyrus Harmon"
   :serial t
   :default-component-class asdf:cl-source-file
@@ -17,10 +17,10 @@
    (:mvn "org.openscience.cdk/cdk" :version "1.4.8-SNAPSHOT")
    (:file "package")
    (:file "utilities")
-   (:file "abcl-cdk-hacking")))
+   (:file "abcl-cdk")))
 
-(cl:defpackage #:abcl-cdk-hacking-config (:export #:*base-directory*))
+(cl:defpackage #:abcl-cdk-config (:export #:*base-directory*))
 
-(cl:defparameter abcl-cdk-hacking-config:*base-directory* 
+(cl:defparameter abcl-cdk-config:*base-directory* 
   (make-pathname :name nil :type nil :defaults *load-truename*))
 

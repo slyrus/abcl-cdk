@@ -386,7 +386,7 @@ Finally, we can render our molecule of choice, caffeine to an SVG file thusly:
 
 And we see:
 
-![caffeine SVG](caffeine.svg)
+![caffeine SVG](/static/caffeine.svg)
 
 Voila!
 
