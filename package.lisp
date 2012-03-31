@@ -30,7 +30,8 @@
 (cl:defpackage :abcl-cdk
   (:use :common-lisp)
   (:export #:jimport #:jlist
-           #:getmol
+
+           #:parse-smiles-string
            #:mol-to-svg
            #:mol-to-pdf))
 

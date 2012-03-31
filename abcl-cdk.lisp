@@ -54,8 +54,8 @@
                             "getInstance")
               nil)))
 
-(defun getmol (smiles-string)
-  (java:jcall "parseSmiles" *smiles-parser* smiles-string))
+(defun parse-smiles-string (smiles-string)
+  (#"parseSmiles" *smiles-parser* smiles-string))
 
 (defun mol-to-svg (mol pathname)
   (with-open-file (out-stream pathname :direction :output
@@ -69,18 +69,18 @@
                         (java:jnew |BasicSceneGenerator|))
                        (java:jnew |AWTFontManager|)))
          (vg (java:jnew |SVGGraphics2D|
-                        (java:jcall "getWrappedOutputStream" out-stream)
+                        (#"getWrappedOutputStream" out-stream)
                         (java:jnew |Dimension| 320 320)))
          (adv (java:jnew |AWTDrawVisitor| vg)))
-      (java:jcall "startExport" vg)
-      (java:jcall "generateCoordinates"
+      (#"startExport" vg)
+      (#"generateCoordinates"
                   (java:jnew |StructureDiagramGenerator| mol))
-      (java:jcall "setup" r mol (java:jnew |Rectangle| 0 0 100 100))
-      (java:jcall "paint" r mol adv
+      (#"setup" r mol (java:jnew |Rectangle| 0 0 100 100))
+      (#"paint" r mol adv
                   (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
                              10 10 300 300)
                   java:+true+)
-      (java:jcall "endExport" vg))))
+      (#"endExport" vg))))
 
 (defun mol-to-pdf (mol pathname)
   (with-open-file (out-stream pathname :direction :output
@@ -94,23 +94,16 @@
                         (java:jnew |BasicSceneGenerator|))
                        (java:jnew |AWTFontManager|)))
          (vg (java:jnew |PDFGraphics2D|
-                        (java:jcall "getWrappedOutputStream" out-stream)
+                        (#"getWrappedOutputStream" out-stream)
                         (java:jnew |Dimension| 320 320)))
          (adv (java:jnew |AWTDrawVisitor| vg)))
-      (java:jcall "startExport" vg)
-      (java:jcall "generateCoordinates"
+      (#"startExport" vg)
+      (#"generateCoordinates"
                   (java:jnew |StructureDiagramGenerator| mol))
-      (java:jcall "setup" r mol (java:jnew |Rectangle| 0 0 100 100))
-      (java:jcall "paint" r mol adv
+      (#"setup" r mol (java:jnew |Rectangle| 0 0 100 100))
+      (#"paint" r mol adv
                   (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
                              10 10 300 300)
                   java:+true+)
-      (java:jcall "endExport" vg))))
-
-(defparameter *caffeine*
-  (java:jcall "parseSmiles" *smiles-parser* "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"))
-
-(mol-to-svg *caffeine* "/tmp/caffeine.svg")
-
-(mol-to-pdf *caffeine* "/tmp/caffeine.pdf")
+      (#"endExport" vg))))
 
