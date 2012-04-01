@@ -54,6 +54,11 @@
                             "getInstance")
               nil)))
 
+(defparameter *renderer-generators*
+  (jlist (java:jnew |BasicAtomGenerator|)
+         (java:jnew |BasicBondGenerator|)
+         (java:jnew |BasicSceneGenerator|)))
+
 (defun parse-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))
 
@@ -61,49 +66,39 @@
   (with-open-file (out-stream pathname :direction :output
                                        :if-exists :supersede
                                        :element-type :default)
-    (let*
-        ((r (java:jnew |AtomContainerRenderer|
-                       (jlist
-                        (java:jnew |BasicAtomGenerator|)
-                        (java:jnew |BasicBondGenerator|)
-                        (java:jnew |BasicSceneGenerator|))
-                       (java:jnew |AWTFontManager|)))
-         (vg (java:jnew |SVGGraphics2D|
-                        (#"getWrappedOutputStream" out-stream)
-                        (java:jnew |Dimension| 320 320)))
-         (adv (java:jnew |AWTDrawVisitor| vg)))
-      (#"startExport" vg)
-      (#"generateCoordinates"
-                  (java:jnew |StructureDiagramGenerator| mol))
-      (#"setup" r mol (java:jnew |Rectangle| 0 0 100 100))
-      (#"paint" r mol adv
-                  (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                             10 10 300 300)
-                  java:+true+)
-      (#"endExport" vg))))
+    (let* ((renderer (java:jnew |AtomContainerRenderer|
+                                *renderer-generators*
+                                (java:jnew |AWTFontManager|)))
+           (graphics (java:jnew |SVGGraphics2D|
+                                (#"getWrappedOutputStream" out-stream)
+                                (java:jnew |Dimension| 512 512)))
+           (draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
+      (#"startExport" graphics)
+      (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| mol))
+      (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
+      (#"paint" renderer mol draw-visitor
+                (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
+                           10 10 492 492)
+                java:+true+)
+      (#"endExport" graphics))))
 
 (defun mol-to-pdf (mol pathname)
   (with-open-file (out-stream pathname :direction :output
                                        :if-exists :supersede
                                        :element-type :default)
-    (let*
-        ((r (java:jnew |AtomContainerRenderer|
-                       (jlist
-                        (java:jnew |BasicAtomGenerator|)
-                        (java:jnew |BasicBondGenerator|)
-                        (java:jnew |BasicSceneGenerator|))
-                       (java:jnew |AWTFontManager|)))
-         (vg (java:jnew |PDFGraphics2D|
-                        (#"getWrappedOutputStream" out-stream)
-                        (java:jnew |Dimension| 320 320)))
-         (adv (java:jnew |AWTDrawVisitor| vg)))
-      (#"startExport" vg)
-      (#"generateCoordinates"
-                  (java:jnew |StructureDiagramGenerator| mol))
-      (#"setup" r mol (java:jnew |Rectangle| 0 0 100 100))
-      (#"paint" r mol adv
-                  (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                             10 10 300 300)
-                  java:+true+)
-      (#"endExport" vg))))
+    (let* ((renderer (java:jnew |AtomContainerRenderer|
+                                *renderer-generators*
+                                (java:jnew |AWTFontManager|)))
+           (graphics (java:jnew |PDFGraphics2D|
+                                (#"getWrappedOutputStream" out-stream)
+                                (java:jnew |Dimension| 512 512)))
+           (draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
+      (#"startExport" graphics)
+      (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| mol))
+      (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
+      (#"paint" renderer mol draw-visitor
+                (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
+                           10 10 492 492)
+                java:+true+)
+      (#"endExport" graphics))))
 
