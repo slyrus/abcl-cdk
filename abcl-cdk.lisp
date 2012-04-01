@@ -50,8 +50,7 @@
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
              (java:jcall
-              (java:jmethod (java:jclass |DefaultChemObjectBuilder|)
-                            "getInstance")
+              (java:jmethod |DefaultChemObjectBuilder| "getInstance")
               nil)))
 
 (defparameter *renderer-generators*
@@ -78,7 +77,7 @@
       (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
       (#"paint" renderer mol draw-visitor
                 (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                           10 10 492 492)
+                           10 10 491 491)
                 java:+true+)
       (#"endExport" graphics))))
 
@@ -98,7 +97,7 @@
       (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
       (#"paint" renderer mol draw-visitor
                 (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                           10 10 492 492)
+                           10 10 491 491)
                 java:+true+)
       (#"endExport" graphics))))
 
