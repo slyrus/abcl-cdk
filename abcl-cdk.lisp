@@ -29,7 +29,10 @@
 
 (cl:in-package :abcl-cdk)
 
+(jimport |org.openscience.cdk| |Atom|)
+
 (jimport |org.openscience.cdk.smiles| |SmilesParser|)
+(jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
 (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
 
 (jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
@@ -47,11 +50,24 @@
 (jimport |java.awt| |Dimension|)
 (jimport |java.awt.geom| |Rectangle2D$Double|)
 
+(defun get-atom (atom-container atom-number)
+  (#"getAtom" atom-container atom-number))
+
+(defun get-point2d (atom)
+  (#"getPoint2d" atom))
+
+
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
              (java:jcall
               (java:jmethod |DefaultChemObjectBuilder| "getInstance")
               nil)))
+
+(defparameter *smiles-generator*
+  (java:jnew |SmilesGenerator|))
+
+(defparameter *isomeric-smiles-generator*
+  (java:jstatic "isomericGenerator" |SmilesGenerator|))
 
 (defparameter *renderer-generators*
   (jlist (java:jnew |BasicAtomGenerator|)
@@ -60,6 +76,12 @@
 
 (defun parse-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))
+
+(defun generate-smiles-string (atom-container)
+  (#"createSMILES" *smiles-generator* atom-container))
+
+(defun generate-chiral-smiles-string (atom-container)
+  (#"createSMILES" *isomeric-smiles-generator* atom-container))
 
 (defun mol-to-svg (mol pathname)
   (with-open-file (out-stream pathname :direction :output
