@@ -29,6 +29,9 @@
 
 (cl:in-package :abcl-cdk)
 
+(jimport |javax.vecmath| |Point2d|)
+(jimport |javax.vecmath| |Vector2d|)
+
 (jimport |org.openscience.cdk| |Atom|)
 
 (jimport |org.openscience.cdk.smiles| |SmilesParser|)
@@ -67,12 +70,19 @@
   (java:jnew |SmilesGenerator|))
 
 (defparameter *isomeric-smiles-generator*
+  ;; for John May's master+ branch, we need to use isomeric, not isomericGenerator. argh...
+  (java:jstatic "isomeric" |SmilesGenerator|)
+  #+nil
   (java:jstatic "isomericGenerator" |SmilesGenerator|))
 
 (defparameter *renderer-generators*
-  (jlist (java:jnew |BasicAtomGenerator|)
+  (jlist (java:jnew |BasicSceneGenerator|)
          (java:jnew |BasicBondGenerator|)
-         (java:jnew |BasicSceneGenerator|)))
+         (java:jnew |BasicAtomGenerator|)))
+
+(defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
+                                                   *renderer-generators*
+                                                   (java:jnew |AWTFontManager|)))
 
 (defun parse-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))
@@ -83,43 +93,39 @@
 (defun generate-chiral-smiles-string (atom-container)
   (#"createSMILES" *isomeric-smiles-generator* atom-container))
 
-(defun mol-to-svg (mol pathname)
-  (with-open-file (out-stream pathname :direction :output
-                                       :if-exists :supersede
-                                       :element-type :default)
-    (let* ((renderer (java:jnew |AtomContainerRenderer|
-                                *renderer-generators*
-                                (java:jnew |AWTFontManager|)))
-           (graphics (java:jnew |SVGGraphics2D|
-                                (#"getWrappedOutputStream" out-stream)
-                                (java:jnew |Dimension| 512 512)))
-           (draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
-      (#"startExport" graphics)
-      (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| mol))
-      (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
-      (#"paint" renderer mol draw-visitor
-                (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                           10 10 491 491)
-                java:+true+)
-      (#"endExport" graphics))))
+(defun prepare-atom-container-for-rendering (ac angle)
+  (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| ac)
+                          (java:jnew (java:jconstructor |Vector2d| 2)
+                                     (cos angle) (sin angle))))
 
-(defun mol-to-pdf (mol pathname)
-  (with-open-file (out-stream pathname :direction :output
-                                       :if-exists :supersede
-                                       :element-type :default)
-    (let* ((renderer (java:jnew |AtomContainerRenderer|
-                                *renderer-generators*
-                                (java:jnew |AWTFontManager|)))
-           (graphics (java:jnew |PDFGraphics2D|
-                                (#"getWrappedOutputStream" out-stream)
-                                (java:jnew |Dimension| 512 512)))
-           (draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
-      (#"startExport" graphics)
-      (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| mol))
-      (#"setup" renderer mol (java:jnew |Rectangle| 0 0 511 511))
-      (#"paint" renderer mol draw-visitor
-                (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
-                           10 10 491 491)
-                java:+true+)
-      (#"endExport" graphics))))
+(defun mol-to-graphics (mol renderer graphics width height x-margin y-margin)
+  (let ((draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
+    (#"startExport" graphics)
+    (#"setup" renderer mol (java:jnew |Rectangle| 0 0 (1- width) (1- height)))
+    (#"paint" renderer mol draw-visitor
+              (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
+                         x-margin y-margin (- width (* x-margin 2)) (- height (* y-margin 2)))
+              java:+true+)
+    (#"endExport" graphics)))
 
+(defun mol-to-svg (mol pathname &key (width 512) (height 512) (margin 10)
+                                     (x-margin margin) (y-margin margin) (angle (cons 0 1)))
+  (prepare-atom-container-for-rendering mol angle)
+  (with-open-file (out-stream pathname :direction :output
+                              :if-exists :supersede
+                              :element-type :default)
+    (let ((graphics (java:jnew |SVGGraphics2D|
+                               (#"getWrappedOutputStream" out-stream)
+                               (java:jnew |Dimension| width height))))
+      (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
+
+(defun mol-to-pdf (mol pathname &key (width 512) (height 512) (margin 10)
+                                     (x-margin margin) (y-margin margin) (angle (cons 0 1)))
+  (prepare-atom-container-for-rendering mol angle)
+  (with-open-file (out-stream pathname :direction :output
+                              :if-exists :supersede
+                              :element-type :default)
+    (let ((graphics (java:jnew |PDFGraphics2D|
+                               (#"getWrappedOutputStream" out-stream)
+                               (java:jnew |Dimension| width height))))
+      (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
