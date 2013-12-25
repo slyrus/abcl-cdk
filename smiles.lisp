@@ -1,6 +1,6 @@
-;;; file: package.lisp
+;;; file: smiles.lisp
 ;;;
-;;; Copyright (c) 2012 Cyrus Harmon (ch-lisp@bobobeach.com)
+;;; Copyright (c) 2012-2013 Cyrus Harmon (ch-lisp@bobobeach.com)
 ;;; All rights reserved.
 ;;;
 ;;; Redistribution and use in source and binary forms, with or without
@@ -27,23 +27,36 @@
 ;;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-(cl:defpackage :abcl-cdk
-  (:use :common-lisp)
-  (:export #:jimport #:jlist
+(cl:in-package :abcl-cdk)
 
-           #:items
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (jimport |org.openscience.cdk| |Atom|)
 
-           #:get-atoms-of-symbol
-           #:get-bonds-containing-atom
-           #:get-neighbors
-           
-           #:+up+
-           #:+down+
-           #:+clockwise+
-           #:+anti-clockwise+
-           
-           #:parse-smiles-string
-           #:mol-to-svg
-           #:mol-to-pdf))
+  (jimport |org.openscience.cdk.smiles| |SmilesParser|)
+  (jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
+  (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|))
 
+(defparameter *smiles-parser*
+  (java:jnew |SmilesParser|
+             (java:jcall
+              (java:jmethod |DefaultChemObjectBuilder| "getInstance")
+              nil)))
+
+(defparameter *smiles-generator*
+  (java:jnew |SmilesGenerator|))
+
+(defparameter *isomeric-smiles-generator*
+  ;; for John May's master+ branch, we need to use isomeric, not isomericGenerator. argh...
+  (java:jstatic "isomeric" |SmilesGenerator|)
+  #+nil
+  (java:jstatic "isomericGenerator" |SmilesGenerator|))
+
+(defun parse-smiles-string (smiles-string)
+  (#"parseSmiles" *smiles-parser* smiles-string))
+
+(defun generate-smiles-string (atom-container)
+  (#"createSMILES" *smiles-generator* atom-container))
+
+(defun generate-chiral-smiles-string (atom-container)
+  (#"createSMILES" *isomeric-smiles-generator* atom-container))
 

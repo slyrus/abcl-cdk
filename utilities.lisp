@@ -37,9 +37,46 @@
                   (symbol-name (quote ,class)))))
 
 (jimport |java.util| |Vector|)
+(jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
 
 (defun jlist (&rest initial-contents)
   (sequence:make-sequence-like
    (java:jnew |Vector|) (length initial-contents)
    :initial-contents initial-contents))
+
+;;
+;; General Lisp-side Java Utility Routines
+(defun items (iterable)
+  (let ((iterator (#"iterator" iterable)))
+    (loop while (#"hasNext" iterator)
+          collect (#"next" iterator))))
+
+
+;;
+;; Atom Container Utility Functions
+(defun get-atom (atom-container atom-number)
+  (#"getAtom" atom-container atom-number))
+
+(defun get-atoms-of-symbol (ac symbol)
+  (loop for atom in (items (#"atoms" ac))
+     for s = (#"getSymbol" atom)
+     when (equal s symbol)
+     collect atom))
+
+(defun get-bonds-containing-atom (ac atom)
+  (items (#"getConnectedBondsList" ac atom)))
+
+;;
+;; Use #"getConnectedAtomsList" instead!!!
+(defun get-neighbors (ac atom)
+  (let ((bonds (get-bonds-containing-atom ac atom)))
+    (loop for bond in bonds
+       collect (remove atom (items (#"atoms" bond)) :test 'equalp))))
+
+(defun get-largest-ring (ac)
+  (let* ((arf (java:jnew |AllRingsFinder|))
+         (rs (#"findAllRings" arf ac)))
+  (loop for ring in (items (#"atomContainers" rs))
+     maximizing (#"getRingSize" ring)
+     finally (return ring))))
 

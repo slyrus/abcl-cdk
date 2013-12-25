@@ -16,8 +16,11 @@
    (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.2.1")
    (:mvn "org.openscience.cdk/cdk" :version "1.5.4.1")
    (:file "package")
+   (:file "abcl-cdk")
    (:file "utilities")
-   (:file "abcl-cdk")))
+   (:file "smiles")
+   (:file "geometry")
+   (:file "render")))
 
 (cl:defpackage #:abcl-cdk-config (:export #:*base-directory*))
 
