@@ -61,13 +61,16 @@
 (defun atom-container-atom-extrema (ac)
   (atom-list-atom-extrema (items (#"atoms" ac))))
 
-(defun flip-atom-container-bonds (ac)
-  (loop for bond in (items (#"bonds" ac))
+(defun flip-atom-list-bonds (bonds)
+  (loop for bond in bonds
      do (let ((stereo (#"getStereo" bond)))
           (cond ((equalp stereo +up+)
                  (#"setStereo" bond +down+))
                 ((equalp stereo +down+)
-                 (#"setStereo" bond +up+)))))
+                 (#"setStereo" bond +up+))))))
+
+(defun flip-atom-container-bonds (ac)
+  (flip-atom-list-bonds (items (#"bonds" ac)))
   ac)
 
 (defun flip-atom-container-horizontal (ac)
@@ -103,3 +106,55 @@
     #+nil (flip-atom-container-bonds ac) ;; FIXME!!!
     ac))
 
+(defun flip-atoms-vertical-around-line (ac atom-list y)
+  (loop for atom in atom-list
+     do (let ((oldy (java:jfield "y" (#"getPoint2d" atom))))
+          (setf (java:jfield "y" (#"getPoint2d" atom))
+                (+ y (- y oldy)))))
+  #+nil (flip-atom-container-bonds ac) ;; FIXME!!!
+  ac)
+
+(defun reflect-point-about-line (ax ay px py qx qy)
+  (let ((nx (- qx px))
+        (ny (- qy py)))
+    (let ((d (sqrt (+ (* nx nx) (* ny ny)))))
+      (let ((nx (/ nx d))
+            (ny (/ ny d)))
+        (let ((wx (- ax px))
+              (wy (- ay py)))
+          (let ((w (+ (* nx wx) (* ny wy))))
+            (let ((rx (+ (- (* 2 px) ax) (* 2 w nx)))
+                  (ry (+ (- (* 2 py) ay) (* 2 w ny))))
+              (cons rx ry))))))))
+
+;; In theory this method should be able to reflect a point about a
+;; line more quickly than the method above, as it doesn't involve
+;; computing the square root, but this doesn't seem to work!
+#+nil
+(defun reflect-point-about-line-faster (ax ay px py qx qy)
+  (let ((c (/ (+  (* (- qx px) (- ax px))
+                  (* (- qy py) (- ay py)))
+              (+ (* (- qx px) (- qx px))
+                 (* (- qy py) (- qy py))))))
+    (let ((bx (+ (* 2 px)
+                 (* (- qx px) c)))
+          (by (+ (* 2 py)
+                 (* (- qy py) c))))
+      (cons bx by))))
+
+(defun flip-atoms-around-bond (ac bond atom-list bond-list)
+  (let ((bond-atom-1 (#"getAtom" bond 0))
+        (bond-atom-2 (#"getAtom" bond 1)))
+    (let ((x1 (java:jfield "x" (#"getPoint2d" bond-atom-1)))
+          (y1 (java:jfield "y" (#"getPoint2d" bond-atom-1)))
+          (x2 (java:jfield "x" (#"getPoint2d" bond-atom-2)))
+          (y2 (java:jfield "y" (#"getPoint2d" bond-atom-2))))
+      (loop for atom in atom-list
+         do (let ((ax (java:jfield "x" (#"getPoint2d" atom)))
+                  (ay (java:jfield "y" (#"getPoint2d" atom))))
+              (destructuring-bind (bx . by)
+                  (reflect-point-about-line ax ay x1 y1 x2 y2)
+                (setf (java:jfield "x" (#"getPoint2d" atom)) bx
+                      (java:jfield "y" (#"getPoint2d" atom)) by))))
+      (flip-atom-list-bonds bond-list)
+      ac)))
