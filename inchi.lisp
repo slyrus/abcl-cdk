@@ -1,4 +1,4 @@
-;;; file: abcl-cdk.lisp
+;;; file: inchi.lisp
 ;;;
 ;;; Copyright (c) 2012 Cyrus Harmon (ch-lisp@bobobeach.com)
 ;;; All rights reserved.
@@ -28,4 +28,19 @@
 ;;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 (cl:in-package :abcl-cdk)
+
+(jimport |org.openscience.cdk.inchi| |InChIGeneratorFactory|)
+
+(defparameter *inchi-factory*
+  (java:jcall
+   (java:jmethod |InChIGeneratorFactory| "getInstance")
+   nil))
+
+(defun get-inchi (atom-container)
+  (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container)))
+    (#"getInchi" gen)))
+
+(defun get-inchi-key (atom-container)
+  (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container)))
+    (#"getInchiKey" gen)))
 
