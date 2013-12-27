@@ -44,6 +44,8 @@
            
            #:parse-smiles-string
            #:mol-to-svg
-           #:mol-to-pdf))
+           #:mol-to-pdf
 
+           #:get-inchi
+           #:get-inchi-key))
 
