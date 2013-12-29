@@ -29,12 +29,11 @@
 
 (cl:in-package :abcl-cdk)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (jimport |org.openscience.cdk| |Atom|)
+(jimport |org.openscience.cdk| |Atom|)
 
-  (jimport |org.openscience.cdk.smiles| |SmilesParser|)
-  (jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
-  (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|))
+(jimport |org.openscience.cdk.smiles| |SmilesParser|)
+(jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
+(jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
 
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
@@ -43,13 +42,13 @@
               nil)))
 
 (defparameter *smiles-generator*
-  (java:jnew |SmilesGenerator|))
+  (java:jnew #.|SmilesGenerator|))
 
 (defparameter *isomeric-smiles-generator*
   ;; for John May's master+ branch, we need to use isomeric, not isomericGenerator. argh...
-  (java:jstatic "isomeric" |SmilesGenerator|)
+  (java:jstatic "isomeric" #.|SmilesGenerator|)
   #+nil
-  (java:jstatic "isomericGenerator" |SmilesGenerator|))
+  (java:jstatic "isomericGenerator" #.|SmilesGenerator|))
 
 (defun parse-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))

@@ -30,18 +30,22 @@
 (cl:in-package :abcl-cdk)
 
 (defmacro jimport (java-package class &optional package)
-  `(defparameter ,(apply #'intern class
-                         (when package (list package)))
-     (concatenate 'string (symbol-name (quote ,java-package))
-                  "."
-                  (symbol-name (quote ,class)))))
+  `(eval-when (:compile-toplevel :load-toplevel :execute)
+    (defparameter ,(apply #'intern class
+                          (when package (list package)))
+      (concatenate 'string (symbol-name (quote ,java-package))
+                   "."
+                   (symbol-name (quote ,class))))))
 
 (jimport |java.util| |Vector|)
+(jimport |java.lang| |Integer|)
+(jimport |org.openscience.cdk.interfaces| |IPseudoAtom|)
+(jimport |org.openscience.cdk.graph| |ShortestPaths|)
 (jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
 
 (defun jlist (&rest initial-contents)
   (sequence:make-sequence-like
-   (java:jnew |Vector|) (length initial-contents)
+   (java:jnew #.|Vector|) (length initial-contents)
    :initial-contents initial-contents))
 
 ;;
@@ -63,20 +67,38 @@
      when (equal s symbol)
      collect atom))
 
+(defun get-pseudo-atoms (ac)
+  (loop for atom in (items (#"atoms" ac))
+     when (java:jinstance-of-p atom |IPseudoAtom|)
+     collect atom))
+
 (defun get-bonds-containing-atom (ac atom)
   (items (#"getConnectedBondsList" ac atom)))
 
-;;
-;; Use #"getConnectedAtomsList" instead!!!
 (defun get-neighbors (ac atom)
-  (let ((bonds (get-bonds-containing-atom ac atom)))
-    (loop for bond in bonds
-       collect (remove atom (items (#"atoms" bond)) :test 'equalp))))
+  (items (#"getConnectedAtomsList" ac atom)))
 
 (defun get-largest-ring (ac)
-  (let* ((arf (java:jnew |AllRingsFinder|))
+  (let* ((arf (java:jnew #.|AllRingsFinder|))
          (rs (#"findAllRings" arf ac)))
-  (loop for ring in (items (#"atomContainers" rs))
-     maximizing (#"getRingSize" ring)
-     finally (return ring))))
+    (loop for ring in (items (#"atomContainers" rs))
+       maximizing (#"getRingSize" ring)
+       finally (return ring))))
+
+(defun get-reachable-atoms (ac start)
+  (let ((n-shortest-paths (java:jnew #.|ShortestPaths| ac start)))
+    (loop for atom in (items (#"atoms" ac))
+       for d = (#"distanceTo" n-shortest-paths atom)
+       when (< d (java:jfield #.|Integer| "MAX_VALUE"))
+       collect atom)))
+
+(defun get-reachable-bonds (ac start)
+  (remove-duplicates
+   (apply #'append
+          (let ((n-shortest-paths (java:jnew #.|ShortestPaths| ac start)))
+            (loop for atom in (items (#"atoms" ac))
+               for d = (#"distanceTo" n-shortest-paths atom)
+               when (< d (java:jfield #.|Integer| "MAX_VALUE"))
+               collect (get-bonds-containing-atom ac atom))))
+   :test 'equalp))
 

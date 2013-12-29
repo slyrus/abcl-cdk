@@ -29,42 +29,41 @@
 
 (cl:in-package :abcl-cdk)
 
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (jimport |javax.vecmath| |Vector2d|)
+(jimport |javax.vecmath| |Vector2d|)
 
-  (jimport |org.openscience.cdk| |Atom|)
+(jimport |org.openscience.cdk| |Atom|)
 
-  (jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
-  (jimport |org.openscience.cdk.renderer.generators| |BasicAtomGenerator|)
-  (jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator|)
-  (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
+(jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicAtomGenerator|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
 
-  (jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
-  (jimport |org.freehep.graphicsio| |PageConstants|)
-  (jimport |org.freehep.graphicsio.svg| |SVGGraphics2D|)
-  (jimport |org.freehep.graphicsio.pdf| |PDFGraphics2D|)
-  (jimport |org.openscience.cdk.renderer.visitor| |AWTDrawVisitor|)
-  (jimport |org.openscience.cdk.layout| |StructureDiagramGenerator|)
+(jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
+(jimport |org.freehep.graphicsio| |PageConstants|)
+(jimport |org.freehep.graphicsio.svg| |SVGGraphics2D|)
+(jimport |org.freehep.graphicsio.pdf| |PDFGraphics2D|)
+(jimport |org.openscience.cdk.renderer.visitor| |AWTDrawVisitor|)
+(jimport |org.openscience.cdk.layout| |StructureDiagramGenerator|)
 
-  (jimport |java.awt| |Rectangle|)
-  (jimport |java.awt| |Dimension|)
-  (jimport |java.awt.geom| |Rectangle2D$Double|))
+(jimport |java.awt| |Rectangle|)
+(jimport |java.awt| |Dimension|)
+(jimport |java.awt.geom| |Rectangle2D$Double|)
 
 ;;
 ;; Atom Container Rendering Support
 
 (defparameter *renderer-generators*
-  (jlist (java:jnew |BasicSceneGenerator|)
-         (java:jnew |BasicBondGenerator|)
-         (java:jnew |BasicAtomGenerator|)))
+  (jlist (java:jnew #.|BasicSceneGenerator|)
+         (java:jnew #.|BasicBondGenerator|)
+         (java:jnew #.|BasicAtomGenerator|)))
 
-(defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
+(defparameter *atom-container-renderer* (java:jnew #.|AtomContainerRenderer|
                                                    *renderer-generators*
-                                                   (java:jnew |AWTFontManager|)))
+                                                   (java:jnew #.|AWTFontManager|)))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
-  (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| ac)
-                          (java:jnew (java:jconstructor |Vector2d| 2)
+  (#"generateCoordinates" (java:jnew #.|StructureDiagramGenerator| ac)
+                          (java:jnew (java:jconstructor #.|Vector2d| 2)
                                      (cos angle) (sin angle)))
   (case flip
     (:vertical (flip-atom-container-vertical ac))
@@ -73,11 +72,11 @@
            (flip-atom-container-horizontal ac))))
  
 (defun mol-to-graphics (mol renderer graphics width height x-margin y-margin)
-  (let ((draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
+  (let ((draw-visitor (java:jnew #.|AWTDrawVisitor| graphics)))
     (#"startExport" graphics)
-    (#"setup" renderer mol (java:jnew |Rectangle| 0 0 (1- width) (1- height)))
+    (#"setup" renderer mol (java:jnew #.|Rectangle| 0 0 (1- width) (1- height)))
     (#"paint" renderer mol draw-visitor
-              (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
+              (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
                          x-margin y-margin (- width (* x-margin 2)) (- height (* y-margin 2)))
               java:+true+)
     (#"endExport" graphics)))
@@ -86,26 +85,25 @@
   (with-open-file (out-stream pathname :direction :output
                               :if-exists :supersede
                               :element-type :default)
-    (let ((graphics (java:jnew |SVGGraphics2D|
+    (let ((graphics (java:jnew #.|SVGGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
-                               (java:jnew |Dimension| width height))))
+                               (java:jnew #.|Dimension| width height))))
       (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
 
 (defun draw-atom-container-to-pdf (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
                               :if-exists :supersede
                               :element-type :default)
-    (let ((prop (java:jstatic "getDefaultProperties" |PDFGraphics2D|)))
-        (describe prop)
+    (let ((prop (java:jstatic "getDefaultProperties" #.|PDFGraphics2D|)))
         (#"setProperty" prop
-                        (java:jfield |PDFGraphics2D| "PAGE_SIZE")
-                        (java:jfield |PageConstants| "A6"))
+                        (java:jfield #.|PDFGraphics2D| "PAGE_SIZE")
+                        (java:jfield #.|PageConstants| "A6"))
         (#"setProperty" prop
-                        (java:jfield |PDFGraphics2D| "ORIENTATION")
-                        (java:jfield |PageConstants| "LANDSCAPE")))
-    (let ((graphics (java:jnew |PDFGraphics2D|
+                        (java:jfield #.|PDFGraphics2D| "ORIENTATION")
+                        (java:jfield #.|PageConstants| "LANDSCAPE")))
+    (let ((graphics (java:jnew #.|PDFGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
-                               (java:jnew |Dimension| width height))))
+                               (java:jnew #.|Dimension| width height))))
       (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
 
 (defun mol-to-svg (mol pathname &key (width 512) (height 512) (margin 0)

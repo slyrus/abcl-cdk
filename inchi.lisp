@@ -33,7 +33,7 @@
 
 (defparameter *inchi-factory*
   (java:jcall
-   (java:jmethod |InChIGeneratorFactory| "getInstance")
+   (java:jmethod #.|InChIGeneratorFactory| "getInstance")
    nil))
 
 (defun get-inchi (atom-container)

@@ -29,13 +29,16 @@
 
 (cl:defpackage :abcl-cdk
   (:use :common-lisp)
-  (:export #:jimport #:jlist
+  (:export #:jimport
+           #:jlist
 
            #:items
 
            #:get-atoms-of-symbol
            #:get-bonds-containing-atom
            #:get-neighbors
+
+           #:get-largest-ring
            
            #:+up+
            #:+down+
@@ -46,6 +49,15 @@
            #:mol-to-svg
            #:mol-to-pdf
 
+           #:prepare-atom-container-for-rendering
+           #:flip-atoms-around-bond
+           #:draw-atom-container-to-svg
+           #:draw-atom-container-to-pdf
+
            #:get-inchi
-           #:get-inchi-key))
+           #:get-inchi-key
+           
+           #:get-reachable-atoms
+           #:get-reachable-bonds
+           ))
 
