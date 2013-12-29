@@ -10,6 +10,9 @@
             :components
             ((:file "examples")))))
 
+(cl:defpackage #:abcl-cdk-examples-config (:export #:*base-directory*))
+
 (cl:defparameter abcl-cdk-examples-config:*base-directory* 
-  (make-pathname :name "examples/" :type nil :defaults *load-truename*))
+  (merge-pathnames #P"examples/"
+                   (make-pathname :name nil :type nil :defaults *load-truename*)))
 
