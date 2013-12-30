@@ -29,6 +29,7 @@
 
 (cl:in-package :abcl-cdk)
 
+(jimport |java.awt| |Color|)
 (jimport |javax.vecmath| |Vector2d|)
 
 (jimport |org.openscience.cdk| |Atom|)
@@ -36,7 +37,9 @@
 (jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicAtomGenerator|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator$DefaultBondColor|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BackgroundColor|)
 
 (jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
 (jimport |org.freehep.graphicsio| |PageConstants|)
@@ -70,16 +73,33 @@
     (:horizontal (flip-atom-container-horizontal ac))
     (:both (flip-atom-container-vertical ac)
            (flip-atom-container-horizontal ac))))
- 
+
+(defparameter *background-color* (java:jfield |Color| "white"))
+(defparameter *default-bond-color* (java:jfield |Color| "black"))
+(defparameter *scene-background-color* nil)
+(defparameter *graphics-background-color* nil)
+
 (defun mol-to-graphics (mol renderer graphics width height x-margin y-margin)
-  (let ((draw-visitor (java:jnew #.|AWTDrawVisitor| graphics)))
-    (#"startExport" graphics)
-    (#"setup" renderer mol (java:jnew #.|Rectangle| 0 0 (1- width) (1- height)))
-    (#"paint" renderer mol draw-visitor
-              (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
-                         x-margin y-margin (- width (* x-margin 2)) (- height (* y-margin 2)))
-              java:+true+)
-    (#"endExport" graphics)))
+  (let ((*scene-background-color* (or *scene-background-color* *background-color*))
+        (*graphics-background-color* (or *graphics-background-color* *background-color*)))
+    (#"set" (#"getRenderer2DModel" renderer)
+            (java:jclass |BasicSceneGenerator$BackgroundColor|)
+            *scene-background-color*)
+    (#"set" (#"getRenderer2DModel" renderer)
+            (java:jclass |BasicBondGenerator$DefaultBondColor|)
+            *default-bond-color*)
+    (let ((draw-visitor (java:jnew #.|AWTDrawVisitor| graphics)))
+      (#"startExport" graphics)
+      (let ((bounds (java:jnew #.|Rectangle| 0 0 (1- width) (1- height))))
+        (#"setup" renderer mol bounds)
+        (when *graphics-background-color*
+          (#"setBackground" graphics *graphics-background-color*)
+          (#"clearRect" graphics 0 0 (1- width) (1- height))))
+      (#"paint" renderer mol draw-visitor
+                (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
+                           x-margin y-margin (- width (* x-margin 2)) (- height (* y-margin 2)))
+                java:+true+)
+      (#"endExport" graphics))))
 
 (defun draw-atom-container-to-svg (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
