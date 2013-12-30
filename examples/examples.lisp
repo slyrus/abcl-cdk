@@ -5,6 +5,7 @@
 (cl:in-package :abcl-cdk-examples)
 
 (jimport |org.openscience.cdk.geometry.cip| |CIPTool|)
+(jimport |java.awt| |Color|)
 
 #+nil (named-readtables:in-readtable abcl-cdk::abcl-cdk-readtable)
 
