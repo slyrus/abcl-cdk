@@ -18,32 +18,35 @@
 (abcl-cdk::generate-smiles-string *d-valine*)
 (abcl-cdk::generate-chiral-smiles-string *d-valine*)
 
-(mol-to-svg *l-valine* "/tmp/l-valine.svg")
-(mol-to-pdf *l-valine* "/tmp/l-valine.pdf")
+(defun example-file (name)
+  (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
 
-(mol-to-pdf (parse-smiles-string "CC(C)[C@@H](C(=O)O)N") "/tmp/l-valine.pdf")
+(mol-to-svg *l-valine* (example-file "l-valine.svg"))
+(mol-to-pdf *l-valine* (example-file "l-valine.pdf"))
+
+(mol-to-pdf (parse-smiles-string "CC(C)[C@@H](C(=O)O)N") (example-file "l-valine.pdf"))
 
 (defparameter *caffeine* (parse-smiles-string "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"))
-(mol-to-svg *caffeine* "/tmp/caffeine.svg")
-(mol-to-pdf *caffeine* "/tmp/caffeine.pdf")
+(mol-to-svg *caffeine* (example-file "caffeine.svg"))
+(mol-to-pdf *caffeine* (example-file "caffeine.pdf"))
 
 (defparameter *ticagrelor* (parse-smiles-string "CCCSC1=NC2=C(C(=N1)N[C@@H]3C[C@H]3C4=CC(=C(C=C4)F)F)N=NN2[C@@H]5C[C@@H]([C@H]([C@H]5O)O)OCCO"))
-(mol-to-svg *ticagrelor* "/tmp/ticagrelor.svg")
-(mol-to-pdf *ticagrelor* "/tmp/ticagrelor.pdf")
+(mol-to-svg *ticagrelor* (example-file "ticagrelor.svg"))
+(mol-to-pdf *ticagrelor* (example-file "ticagrelor.pdf"))
 
 (defparameter *z-tamoxifen* (parse-smiles-string "CC/C(=C(\\C1=CC=CC=C1)/C2=CC=C(C=C2)OCCN(C)C)/C3=CC=CC=C3"))
-(mol-to-svg *z-tamoxifen* "/tmp/z-tamoxifen.svg")
-(mol-to-pdf *z-tamoxifen* "/tmp/z-tamoxifen.pdf")
+(mol-to-svg *z-tamoxifen* (example-file "z-tamoxifen.svg"))
+(mol-to-pdf *z-tamoxifen* (example-file "z-tamoxifen.pdf"))
 
 (defparameter *tamoxifen* (parse-smiles-string "CCC(=C(C1=CC=CC=C1)C2=CC=C(C=C2)OCCN(C)C)C3=CC=CC=C3"))
-(mol-to-svg *tamoxifen* "/tmp/tamoxifen.svg")
-(mol-to-pdf *tamoxifen* "/tmp/tamoxifen.pdf")
+(mol-to-svg *tamoxifen* (example-file "tamoxifen.svg"))
+(mol-to-pdf *tamoxifen* (example-file "tamoxifen.pdf"))
 
 (defparameter *alanine* (parse-smiles-string "C[C@@H](C(=O)O)N"))
-(mol-to-pdf *alanine* "/tmp/alanine.pdf")
+(mol-to-pdf *alanine* (example-file "alanine.pdf"))
 
 (defparameter *t2* (parse-smiles-string "CCCSC1=NC2=C(C(=N1)NC3CC3C4=CC(=C(C=C4)F)F)N=NN2C5CC(C(C5O)O)OCCO"))
-(mol-to-pdf *t2* "/tmp/t2.pdf")
+(mol-to-pdf *t2* (example-file "t2.pdf"))
 
 (get-inchi *ticagrelor*)
 (get-inchi *caffeine*)
