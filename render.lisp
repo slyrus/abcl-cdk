@@ -130,11 +130,13 @@
                                      (x-margin margin) (y-margin margin) (angle 0d0) flip)
   (let ((mol (#"clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
-    (draw-atom-container-to-svg mol pathname width height x-margin y-margin)))
+    (draw-atom-container-to-svg mol pathname width height x-margin y-margin)
+    pathname))
 
 (defun mol-to-pdf (mol pathname &key (width 512) (height 512) (margin 0)
                                      (x-margin margin) (y-margin margin) (angle 0d0) flip)
   (let ((mol (#"clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
-    (draw-atom-container-to-pdf mol pathname width height x-margin y-margin)))
+    (draw-atom-container-to-pdf mol pathname width height x-margin y-margin)
+    pathname))
 
