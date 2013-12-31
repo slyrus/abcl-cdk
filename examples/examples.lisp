@@ -11,7 +11,7 @@
   (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
 
 (defparameter *valine* (read-smiles-string "CC(C)[C](C(=O)O)N"))
-,(mol-to-svg *valine* (example-file "valine.svg"))
+(mol-to-svg *valine* (example-file "valine.svg"))
 
 (defparameter *l-valine* (read-smiles-string "CC(C)[C@@H](C(=O)O)N"))
 (write-smiles-string *l-valine*)
