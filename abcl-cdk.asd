@@ -14,7 +14,7 @@
   ((:mvn "org.freehep/freehep-graphics2d" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.2.1")
-   (:mvn "org.openscience.cdk/cdk" :version "1.5.4.1")
+   (:mvn "org.openscience.cdk/cdk-git" :version "1.5.5")
    (:file "package")
    (:file "utilities")
    (:file "smiles")
