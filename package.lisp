@@ -50,7 +50,9 @@
            #:write-chiral-smiles-string
            #:mol-to-svg
            #:mol-to-pdf
-
+           #:*background-color*
+           #:*default-bond-color*
+           
            #:prepare-atom-container-for-rendering
            #:flip-atoms-around-bond
            #:draw-atom-container-to-svg
