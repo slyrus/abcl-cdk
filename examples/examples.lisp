@@ -7,8 +7,6 @@
 (jimport |org.openscience.cdk.geometry.cip| |CIPTool|)
 (jimport |java.awt| |Color|)
 
-#+nil (named-readtables:in-readtable abcl-cdk::abcl-cdk-readtable)
-
 (defun example-file (name)
   (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
 
@@ -16,12 +14,12 @@
 ,(mol-to-svg *valine* (example-file "valine.svg"))
 
 (defparameter *l-valine* (read-smiles-string "CC(C)[C@@H](C(=O)O)N"))
-(abcl-cdk::write-smiles-string *l-valine*)
-(abcl-cdk::write-chiral-smiles-string *l-valine*)
+(write-smiles-string *l-valine*)
+(write-chiral-smiles-string *l-valine*)
 
 (defparameter *d-valine* (read-smiles-string "CC(C)[C@H](C(=O)O)N"))
-(abcl-cdk::write-smiles-string *d-valine*)
-(abcl-cdk::write-chiral-smiles-string *d-valine*)
+(write-smiles-string *d-valine*)
+(write-chiral-smiles-string *d-valine*)
 
 (mol-to-svg *l-valine* (example-file "l-valine.svg"))
 (mol-to-pdf *l-valine* (example-file "l-valine.pdf"))
