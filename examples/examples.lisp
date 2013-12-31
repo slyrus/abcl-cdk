@@ -86,13 +86,15 @@
 (mol-to-pdf *l-valine* "l-valine.pdf")
 (mol-to-pdf *d-valine* "d-valine.pdf")
 
+(defparameter *but-2-ene* (read-smiles-string "CC=CC"))
+
 (defparameter *e-but-2-ene* (read-smiles-string "[H]\\C(C)=C(\\[H])C"))
-(mol-to-svg *e-but-2-ene* "blog/e-but-2-ene.svg" :width 128 :height 128)
-(mol-to-pdf *e-but-2-ene* "blog/e-but-2-ene.pdf" :width 128 :height 128)
+(mol-to-svg *e-but-2-ene* (example-file "e-but-2-ene.svg") :width 128 :height 128)
+(mol-to-pdf *e-but-2-ene* (example-file "e-but-2-ene.pdf") :width 128 :height 128)
 
 (defparameter *z-but-2-ene* (read-smiles-string "[H]/C(C)=C(\\[H])C"))
-(mol-to-svg *z-but-2-ene* "blog/z-but-2-ene.svg" :width 128 :height 128)
-(mol-to-pdf *z-but-2-ene* "blog/z-but-2-ene.pdf" :width 128 :height 128)
+(mol-to-svg *z-but-2-ene* (example-file "z-but-2-ene.svg") :width 128 :height 128)
+(mol-to-pdf *z-but-2-ene* (example-file "z-but-2-ene.pdf") :width 128 :height 128)
 
 (let ((abcl-cdk::*background-color* (java:jfield |Color| "black"))
       (abcl-cdk::*default-bond-color* (java:jfield |Color| "white")))
