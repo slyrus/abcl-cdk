@@ -45,17 +45,15 @@
   (java:jnew #.|SmilesGenerator|))
 
 (defparameter *isomeric-smiles-generator*
-  ;; for John May's master+ branch, we need to use isomeric, not isomericGenerator. argh...
-  (java:jstatic "isomeric" #.|SmilesGenerator|)
-  #+nil
-  (java:jstatic "isomericGenerator" #.|SmilesGenerator|))
+  ;; As of CDK 1.5.4 we use isomeric, not isomericGenerator
+  (java:jstatic "isomeric" #.|SmilesGenerator|))
 
-(defun parse-smiles-string (smiles-string)
+(defun read-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))
 
-(defun generate-smiles-string (atom-container)
+(defun write-smiles-string (atom-container)
   (#"createSMILES" *smiles-generator* atom-container))
 
-(defun generate-chiral-smiles-string (atom-container)
+(defun write-chiral-smiles-string (atom-container)
   (#"createSMILES" *isomeric-smiles-generator* atom-container))
 

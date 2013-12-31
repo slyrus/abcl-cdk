@@ -45,7 +45,8 @@
            #:+clockwise+
            #:+anti-clockwise+
            
-           #:parse-smiles-string
+           #:read-smiles-string
+           #:write-smiles-string
            #:mol-to-svg
            #:mol-to-pdf
 
