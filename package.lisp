@@ -47,6 +47,7 @@
            
            #:read-smiles-string
            #:write-smiles-string
+           #:write-chiral-smiles-string
            #:mol-to-svg
            #:mol-to-pdf
 
