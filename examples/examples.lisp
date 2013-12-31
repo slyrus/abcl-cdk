@@ -9,6 +9,9 @@
 
 #+nil (named-readtables:in-readtable abcl-cdk::abcl-cdk-readtable)
 
+(defun example-file (name)
+  (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
+
 (defparameter *valine* (parse-smiles-string "CC(C)[C](C(=O)O)N"))
 
 (defparameter *l-valine* (parse-smiles-string "CC(C)[C@@H](C(=O)O)N"))
@@ -18,9 +21,6 @@
 (defparameter *d-valine* (parse-smiles-string "CC(C)[C@H](C(=O)O)N"))
 (abcl-cdk::generate-smiles-string *d-valine*)
 (abcl-cdk::generate-chiral-smiles-string *d-valine*)
-
-(defun example-file (name)
-  (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
 
 (mol-to-svg *l-valine* (example-file "l-valine.svg"))
 (mol-to-pdf *l-valine* (example-file "l-valine.pdf"))
