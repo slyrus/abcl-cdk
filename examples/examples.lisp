@@ -13,6 +13,7 @@
   (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
 
 (defparameter *valine* (parse-smiles-string "CC(C)[C](C(=O)O)N"))
+(mol-to-svg *valine* (example-file "valine.svg"))
 
 (defparameter *l-valine* (parse-smiles-string "CC(C)[C@@H](C(=O)O)N"))
 (abcl-cdk::generate-smiles-string *l-valine*)
@@ -94,3 +95,7 @@
 (defparameter *z-but-2-ene* (parse-smiles-string "[H]/C(C)=C(\\[H])C"))
 (mol-to-svg *z-but-2-ene* "blog/z-but-2-ene.svg" :width 128 :height 128)
 (mol-to-pdf *z-but-2-ene* "blog/z-but-2-ene.pdf" :width 128 :height 128)
+
+(let ((abcl-cdk::*background-color* (java:jfield |Color| "black"))
+      (abcl-cdk::*default-bond-color* (java:jfield |Color| "white")))
+  (mol-to-svg *ticagrelor* (example-file "ticagrelor-inverted.svg")))
