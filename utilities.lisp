@@ -132,3 +132,5 @@
                                  0)))
                  (+ h-mass (#"getExactMass" a))))))
 
+(defun atom-container-set-atom-containers (acs)
+  (items (#"atomContainers" acs)))
