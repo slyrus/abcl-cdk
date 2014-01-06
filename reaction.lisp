@@ -34,3 +34,6 @@
 
 (defun products (reaction)
   (atom-container-set-atom-containers (#"getProducts" reaction)))
+
+(defun agents (reaction)
+  (atom-container-set-atom-containers (#"getAgents" reaction)))
