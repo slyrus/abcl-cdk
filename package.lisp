@@ -39,7 +39,8 @@
            #:get-atoms-of-symbol
            #:get-bonds-containing-atom
            #:get-neighbors
-
+           #:get-pseudo-atoms
+           
            #:get-largest-ring
            
            #:+up+
@@ -51,6 +52,7 @@
            #:write-smiles-string
            #:write-chiral-smiles-string
            #:mol-to-svg
+           #:atom-container-to-svg
            #:mol-to-pdf
            #:*background-color*
            #:*default-bond-color*
@@ -67,5 +69,6 @@
            #:get-reachable-bonds
 
            #:get-atom-atom-mapping
-           ))
+
+           #:get-atom-container-exact-mass))
 
