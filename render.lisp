@@ -33,6 +33,7 @@
 (jimport |javax.vecmath| |Vector2d|)
 
 (jimport |org.openscience.cdk| |Atom|)
+(jimport |org.openscience.cdk.graph| |ConnectivityChecker|)
 
 (jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicAtomGenerator|)
@@ -150,3 +151,21 @@
     (draw-atom-container-to-pdf mol pathname width height x-margin y-margin)
     pathname))
 
+(defun atom-container-to-svg (ac pathname &key (width 512) (mol-height 256) (margin 0) (x-margin margin) (y-margin margin))
+  (let ((mols (atom-container-set-atom-containers
+               (java:jstatic "partitionIntoMolecules" |ConnectivityChecker| ac))))
+    (with-open-file (out-stream pathname :direction :output
+                                :if-exists :supersede
+                                :element-type :default)
+      (let ((height (* mol-height (length mols))))
+        (let ((graphics (java:jnew #.|SVGGraphics2D|
+                                   (#"getWrappedOutputStream" out-stream)
+                                   (java:jnew #.|Dimension| width height))))
+          (with-graphics (graphics)
+            (loop for mol in mols
+               for y-offset from 0 by mol-height
+               do
+                 (prepare-atom-container-for-rendering mol)
+                 (mol-to-graphics mol *atom-container-renderer* graphics 0 y-offset
+                                  (1- width) (1- (+ y-offset mol-height)) x-margin y-margin)))))))
+  pathname)
