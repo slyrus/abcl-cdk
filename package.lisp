@@ -34,6 +34,8 @@
 
            #:items
 
+           #:atoms
+           #:bonds
            #:get-atoms-of-symbol
            #:get-bonds-containing-atom
            #:get-neighbors
