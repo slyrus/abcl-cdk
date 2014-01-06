@@ -20,7 +20,8 @@
    (:file "smiles")
    (:file "geometry")
    (:file "render")
-   (:file "inchi")))
+   (:file "inchi")
+   (:file "reaction")))
 
 (cl:defpackage #:abcl-cdk-config (:export #:*base-directory*))
 
