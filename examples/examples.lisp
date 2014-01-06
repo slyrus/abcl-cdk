@@ -99,3 +99,8 @@
 (let ((abcl-cdk::*background-color* (java:jfield |Color| "black"))
       (abcl-cdk::*default-bond-color* (java:jfield |Color| "white")))
   (mol-to-svg *ticagrelor* (example-file "ticagrelor-inverted.svg")))
+
+(defparameter *but-2-ene* (read-smiles-string "C[C:1]=[C:2]C"))
+
+(mapcar #'get-atom-atom-mapping (items (#"atoms" *but-2-ene*)))
+
