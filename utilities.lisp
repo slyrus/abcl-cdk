@@ -39,6 +39,8 @@
 
 (jimport |java.util| |Vector|)
 (jimport |java.lang| |Integer|)
+(jimport |org.openscience.cdk| |CDKConstants|)
+(jimport |org.openscience.cdk.config| |Isotopes|)
 (jimport |org.openscience.cdk.interfaces| |IPseudoAtom|)
 (jimport |org.openscience.cdk.graph| |ShortestPaths|)
 (jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
