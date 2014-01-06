@@ -30,7 +30,7 @@
 (cl:in-package :abcl-cdk)
 
 (defun reactants (reaction)
-  (items (#"getReactants" reaction)))
+  (atom-container-set-atom-containers (#"getReactants" reaction)))
 
 (defun products (reaction)
-  (items (#"getReactants" reaction)))
+  (atom-container-set-atom-containers (#"getProducts" reaction)))
