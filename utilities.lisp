@@ -61,6 +61,13 @@
 (defun get-atom (atom-container atom-number)
   (#"getAtom" atom-container atom-number))
 
+(defun atoms (ac)
+  (items (#"atoms" ac)))
+
+(defun bonds (ac)
+  (items (#"bonds" ac)))
+
+
 (defun get-atoms-of-symbol (ac symbol)
   (loop for atom in (items (#"atoms" ac))
      for s = (#"getSymbol" atom)
@@ -68,7 +75,7 @@
      collect atom))
 
 (defun get-pseudo-atoms (ac)
-  (loop for atom in (items (#"atoms" ac))
+  (loop for atom in (atoms ac)
      when (java:jinstance-of-p atom |IPseudoAtom|)
      collect atom))
 
