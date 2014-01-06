@@ -99,6 +99,9 @@
        when (< d (java:jfield #.|Integer| "MAX_VALUE"))
        collect atom)))
 
+(defun get-atom-atom-mapping (atom)
+  (#"getProperty" atom (java:jfield |CDKConstants| "ATOM_ATOM_MAPPING")))
+
 (defun get-reachable-bonds (ac start)
   (remove-duplicates
    (apply #'append

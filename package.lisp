@@ -65,5 +65,7 @@
            
            #:get-reachable-atoms
            #:get-reachable-bonds
+
+           #:get-atom-atom-mapping
            ))
 
