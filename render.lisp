@@ -79,7 +79,13 @@
 (defparameter *scene-background-color* nil)
 (defparameter *graphics-background-color* nil)
 
-(defun mol-to-graphics (mol renderer graphics width height x-margin y-margin)
+(defmacro with-graphics ((graphics) &body body)
+  `(progn
+    (#"startExport" ,graphics)
+    ,@body
+    (#"endExport" ,graphics)))
+
+(defun mol-to-graphics (mol renderer graphics x1 y1 x2 y2 x-margin y-margin)
   (let ((*scene-background-color* (or *scene-background-color* *background-color*))
         (*graphics-background-color* (or *graphics-background-color* *background-color*)))
     (#"set" (#"getRenderer2DModel" renderer)
@@ -89,17 +95,19 @@
             (java:jclass |BasicBondGenerator$DefaultBondColor|)
             *default-bond-color*)
     (let ((draw-visitor (java:jnew #.|AWTDrawVisitor| graphics)))
-      (#"startExport" graphics)
-      (let ((bounds (java:jnew #.|Rectangle| 0 0 (1- width) (1- height))))
+      (let ((bounds (java:jnew #.|Rectangle| x1 y1 x2 y2)))
         (#"setup" renderer mol bounds)
         (when *graphics-background-color*
           (#"setBackground" graphics *graphics-background-color*)
-          (#"clearRect" graphics 0 0 (1- width) (1- height))))
+          (#"clearRect" graphics x1 y1 x2 y2)))
       (#"paint" renderer mol draw-visitor
-                (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
-                           x-margin y-margin (- width (* x-margin 2)) (- height (* y-margin 2)))
+                (let ((width (1+ (- x2 x1)))
+                      (height (1+ (- y2 y1))))
+                  (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
+                             (+ x1 x-margin) (+ y1 y-margin)
+                             (- width (* x-margin 2)) (- height (* y-margin 2))))
                 java:+true+)
-      (#"endExport" graphics))))
+      )))
 
 (defun draw-atom-container-to-svg (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
@@ -108,7 +116,8 @@
     (let ((graphics (java:jnew #.|SVGGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
                                (java:jnew #.|Dimension| width height))))
-      (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
+      (with-graphics (graphics)
+        (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
 
 (defun draw-atom-container-to-pdf (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
@@ -124,7 +133,8 @@
     (let ((graphics (java:jnew #.|PDFGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
                                (java:jnew #.|Dimension| width height))))
-      (mol-to-graphics mol *atom-container-renderer* graphics width height x-margin y-margin))))
+      (with-graphics (graphics)
+        (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
 
 (defun mol-to-svg (mol pathname &key (width 512) (height 512) (margin 0)
                                      (x-margin margin) (y-margin margin) (angle 0d0) flip)
