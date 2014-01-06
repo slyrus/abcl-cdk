@@ -116,7 +116,8 @@
 
 (defparameter *isotopes* (java:jstatic "getInstance" |Isotopes|))
 (defparameter *h-1* (#"getMajorIsotope" *isotopes* 1))
-(defparameter *h-1-mass* (#"getExactMass" *h-1*))
+(defparameter *h-1-exact-mass* (#"getExactMass" *h-1*))
+(defparameter *h-1-natural-mass* (#"getNaturalMass" *isotopes* *h-1*))
 
 (defun configure-atom-container (ac)
   (loop for a in (atoms ac)
@@ -128,9 +129,18 @@
   (loop for a in (atoms ac)
      sum (let ((h-count (#"getImplicitHydrogenCount" a)))
                (let ((h-mass (if h-count
-                                 (* h-count *h-1-mass*)
+                                 (* h-count *h-1-exact-mass*)
                                  0)))
                  (+ h-mass (#"getExactMass" a))))))
+
+(defun get-atom-container-natural-mass (ac)
+  (configure-atom-container ac)
+  (loop for a in (atoms ac)
+     sum (let ((h-count (#"getImplicitHydrogenCount" a)))
+               (let ((h-mass (if h-count
+                                 (* h-count *h-1-natural-mass*)
+                                 0)))
+                 (+ h-mass (#"getNaturalMass" *isotopes* a))))))
 
 (defun atom-container-set-atom-containers (acs)
   (items (#"atomContainers" acs)))

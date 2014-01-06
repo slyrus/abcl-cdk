@@ -70,5 +70,6 @@
 
            #:get-atom-atom-mapping
 
-           #:get-atom-container-exact-mass))
+           #:get-atom-container-exact-mass
+           #:get-atom-container-natural-mass))
 
