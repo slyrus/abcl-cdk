@@ -109,3 +109,21 @@
                collect (get-bonds-containing-atom ac atom))))
    :test 'equalp))
 
+(defparameter *isotopes* (java:jstatic "getInstance" |Isotopes|))
+(defparameter *h-1* (#"getMajorIsotope" *isotopes* 1))
+(defparameter *h-1-mass* (#"getExactMass" *h-1*))
+
+(defun configure-atom-container (ac)
+  (loop for a in (atoms ac)
+     do (#"configure" *isotopes* a))
+  ac)
+
+(defun get-atom-container-exact-mass (ac)
+  (configure-atom-container ac)
+  (loop for a in (atoms ac)
+     sum (let ((h-count (#"getImplicitHydrogenCount" a)))
+               (let ((h-mass (if h-count
+                                 (* h-count *h-1-mass*)
+                                 0)))
+                 (+ h-mass (#"getExactMass" a))))))
+
