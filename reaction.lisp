@@ -1,4 +1,4 @@
-;;; file: utilities.lisp
+;;; file: reaction.lisp
 ;;;
 ;;; Copyright (c) 2012-2014 Cyrus Harmon (ch-lisp@bobobeach.com)
 ;;; All rights reserved.
