@@ -57,13 +57,13 @@
 ;; Atom Container Rendering Support
 
 (defparameter *renderer-generators*
-  (jlist (java:jnew #.|BasicSceneGenerator|)
-         (java:jnew #.|BasicBondGenerator|)
-         (java:jnew #.|BasicAtomGenerator|)))
+  (jlist (java:jnew |BasicSceneGenerator|)
+         (java:jnew |BasicBondGenerator|)
+         (java:jnew |BasicAtomGenerator|)))
 
-(defparameter *atom-container-renderer* (java:jnew #.|AtomContainerRenderer|
+(defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
                                                    *renderer-generators*
-                                                   (java:jnew #.|AWTFontManager|)))
+                                                   (java:jnew |AWTFontManager|)))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
   (#"generateCoordinates" (java:jnew #.|StructureDiagramGenerator| ac)
@@ -95,8 +95,8 @@
     (#"set" (#"getRenderer2DModel" renderer)
             (java:jclass |BasicBondGenerator$DefaultBondColor|)
             *default-bond-color*)
-    (let ((draw-visitor (java:jnew #.|AWTDrawVisitor| graphics)))
-      (let ((bounds (java:jnew #.|Rectangle| x1 y1 x2 y2)))
+    (let ((draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
+      (let ((bounds (java:jnew |Rectangle| x1 y1 x2 y2)))
         (#"setup" renderer mol bounds)
         (when *graphics-background-color*
           (#"setBackground" graphics *graphics-background-color*)
@@ -104,7 +104,7 @@
       (#"paint" renderer mol draw-visitor
                 (let ((width (1+ (- x2 x1)))
                       (height (1+ (- y2 y1))))
-                  (java:jnew (java:jconstructor #.|Rectangle2D$Double| 4)
+                  (java:jnew (java:jconstructor |Rectangle2D$Double| 4)
                              (+ x1 x-margin) (+ y1 y-margin)
                              (- width (* x-margin 2)) (- height (* y-margin 2))))
                 java:+true+)
@@ -114,9 +114,9 @@
   (with-open-file (out-stream pathname :direction :output
                               :if-exists :supersede
                               :element-type :default)
-    (let ((graphics (java:jnew #.|SVGGraphics2D|
+    (let ((graphics (java:jnew |SVGGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
-                               (java:jnew #.|Dimension| width height))))
+                               (java:jnew |Dimension| width height))))
       (with-graphics (graphics)
         (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
 
@@ -124,16 +124,16 @@
   (with-open-file (out-stream pathname :direction :output
                               :if-exists :supersede
                               :element-type :default)
-    (let ((prop (java:jstatic "getDefaultProperties" #.|PDFGraphics2D|)))
+    (let ((prop (java:jstatic "getDefaultProperties" |PDFGraphics2D|)))
         (#"setProperty" prop
-                        (java:jfield #.|PDFGraphics2D| "PAGE_SIZE")
-                        (java:jfield #.|PageConstants| "A6"))
+                        (java:jfield |PDFGraphics2D| "PAGE_SIZE")
+                        (java:jfield |PageConstants| "A6"))
         (#"setProperty" prop
-                        (java:jfield #.|PDFGraphics2D| "ORIENTATION")
-                        (java:jfield #.|PageConstants| "LANDSCAPE")))
-    (let ((graphics (java:jnew #.|PDFGraphics2D|
+                        (java:jfield |PDFGraphics2D| "ORIENTATION")
+                        (java:jfield |PageConstants| "LANDSCAPE")))
+    (let ((graphics (java:jnew |PDFGraphics2D|
                                (#"getWrappedOutputStream" out-stream)
-                               (java:jnew #.|Dimension| width height))))
+                               (java:jnew |Dimension| width height))))
       (with-graphics (graphics)
         (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
 
@@ -158,9 +158,9 @@
                                 :if-exists :supersede
                                 :element-type :default)
       (let ((height (* mol-height (length mols))))
-        (let ((graphics (java:jnew #.|SVGGraphics2D|
+        (let ((graphics (java:jnew |SVGGraphics2D|
                                    (#"getWrappedOutputStream" out-stream)
-                                   (java:jnew #.|Dimension| width height))))
+                                   (java:jnew |Dimension| width height))))
           (with-graphics (graphics)
             (loop for mol in mols
                for y-offset from 0 by mol-height
