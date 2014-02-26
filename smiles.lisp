@@ -40,11 +40,11 @@
              (java:jstatic "getInstance" |DefaultChemObjectBuilder|)))
 
 (defparameter *smiles-generator*
-  (java:jnew #.|SmilesGenerator|))
+  (java:jnew |SmilesGenerator|))
 
 (defparameter *isomeric-smiles-generator*
   ;; As of CDK 1.5.4 we use isomeric, not isomericGenerator
-  (java:jstatic "absolute" #.|SmilesGenerator|))
+  (java:jstatic "absolute" |SmilesGenerator|))
 
 (defun read-smiles-string (smiles-string)
   (#"parseSmiles" *smiles-parser* smiles-string))
