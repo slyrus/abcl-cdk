@@ -32,9 +32,7 @@
 (jimport |org.openscience.cdk.inchi| |InChIGeneratorFactory|)
 
 (defparameter *inchi-factory*
-  (java:jcall
-   (java:jmethod #.|InChIGeneratorFactory| "getInstance")
-   nil))
+  (java:jstatic "getInstance" |InChIGeneratorFactory|))
 
 (defun get-inchi (atom-container)
   (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container)))
