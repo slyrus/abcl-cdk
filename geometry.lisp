@@ -35,10 +35,10 @@
 (jimport |org.openscience.cdk.interfaces| |IBond$Stereo|)
 
 ;;;; Some lisp-side constants
-(defconstant +clockwise+ (java:jfield #.|ITetrahedralChirality$Stereo| "CLOCKWISE"))
-(defconstant +anti-clockwise+ (java:jfield #.|ITetrahedralChirality$Stereo| "ANTI_CLOCKWISE"))
-(defconstant +up+ (java:jfield #.|IBond$Stereo| "UP"))
-(defconstant +down+ (java:jfield #.|IBond$Stereo| "DOWN"))
+(defconstant +clockwise+ (java:jfield |ITetrahedralChirality$Stereo| "CLOCKWISE"))
+(defconstant +anti-clockwise+ (java:jfield |ITetrahedralChirality$Stereo| "ANTI_CLOCKWISE"))
+(defconstant +up+ (java:jfield |IBond$Stereo| "UP"))
+(defconstant +down+ (java:jfield |IBond$Stereo| "DOWN"))
 
 (defun atom-container-atom-positions (ac)
   (loop for atom in (items (#"atoms" ac))

@@ -66,8 +66,8 @@
                                                    (java:jnew |AWTFontManager|)))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
-  (#"generateCoordinates" (java:jnew #.|StructureDiagramGenerator| ac)
-                          (java:jnew (java:jconstructor #.|Vector2d| 2)
+  (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| ac)
+                          (java:jnew (java:jconstructor |Vector2d| 2)
                                      (cos angle) (sin angle)))
   (case flip
     (:vertical (flip-atom-container-vertical ac))
