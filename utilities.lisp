@@ -47,7 +47,7 @@
 
 (defun jlist (&rest initial-contents)
   (sequence:make-sequence-like
-   (java:jnew #.|Vector|) (length initial-contents)
+   (java:jnew |Vector|) (length initial-contents)
    :initial-contents initial-contents))
 
 ;;
@@ -88,17 +88,17 @@
   (items (#"getConnectedAtomsList" ac atom)))
 
 (defun get-largest-ring (ac)
-  (let* ((arf (java:jnew #.|AllRingsFinder|))
+  (let* ((arf (java:jnew |AllRingsFinder|))
          (rs (#"findAllRings" arf ac)))
     (loop for ring in (items (#"atomContainers" rs))
        maximizing (#"getRingSize" ring)
        finally (return ring))))
 
 (defun get-reachable-atoms (ac start)
-  (let ((n-shortest-paths (java:jnew #.|ShortestPaths| ac start)))
+  (let ((n-shortest-paths (java:jnew |ShortestPaths| ac start)))
     (loop for atom in (items (#"atoms" ac))
        for d = (#"distanceTo" n-shortest-paths atom)
-       when (< d (java:jfield #.|Integer| "MAX_VALUE"))
+       when (< d (java:jfield |Integer| "MAX_VALUE"))
        collect atom)))
 
 (defun get-atom-atom-mapping (atom)
@@ -107,10 +107,10 @@
 (defun get-reachable-bonds (ac start)
   (remove-duplicates
    (apply #'append
-          (let ((n-shortest-paths (java:jnew #.|ShortestPaths| ac start)))
+          (let ((n-shortest-paths (java:jnew |ShortestPaths| ac start)))
             (loop for atom in (items (#"atoms" ac))
                for d = (#"distanceTo" n-shortest-paths atom)
-               when (< d (java:jfield #.|Integer| "MAX_VALUE"))
+               when (< d (java:jfield |Integer| "MAX_VALUE"))
                collect (get-bonds-containing-atom ac atom))))
    :test 'equalp))
 
