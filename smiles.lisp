@@ -37,9 +37,7 @@
 
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
-             (java:jcall
-              (java:jmethod |DefaultChemObjectBuilder| "getInstance")
-              nil)))
+             (java:jstatic "getInstance" |DefaultChemObjectBuilder|)))
 
 (defparameter *smiles-generator*
   (java:jnew #.|SmilesGenerator|))
