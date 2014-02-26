@@ -50,6 +50,26 @@
    (java:jnew |Vector|) (length initial-contents)
    :initial-contents initial-contents))
 
+(defun jarray->list (jarr)
+  (loop for i below (java:jarray-length jarr)
+     collect (java:jarray-ref jarr i)))
+
+;;
+;; Java Array Routines
+;;
+(defun java-2d-array->array (jarr)
+  (let* ((outer-dim (java:jarray-length jarr))
+         (inner-dim
+          (loop for i below outer-dim
+             maximize (java:jarray-length (java:jarray-ref jarr i)))))
+    (let ((arr (make-array (list outer-dim inner-dim))))
+      (loop for i below outer-dim
+         do (let ((inner-dim (java:jarray-length (java:jarray-ref jarr i))))
+              (loop for j below inner-dim
+                 do (setf (aref arr i j)
+                          (java:jarray-ref jarr i j)))))
+      arr)))
+
 ;;
 ;; General Lisp-side Java Utility Routines
 (defun items (iterable)
