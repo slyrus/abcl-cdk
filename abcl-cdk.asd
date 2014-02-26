@@ -10,6 +10,7 @@
   :author "Cyrus Harmon"
   :serial t
   :default-component-class asdf:cl-source-file
+  :depends-on (alexandria)
   :components
   ((:mvn "org.freehep/freehep-graphics2d" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.2.1")
