@@ -12,9 +12,6 @@
 (jimport |org.openscience.cdk.isomorphism| |UniversalIsomorphismTester|)
 
 (defparameter *nts* (java:jstatic "getInstance" |NameToStructure|))
-(#"parseToSmiles" *nts* "acetonitrile")
-
-(#"parseToSmiles" *nts* "l-valine")
 
 (defun parse-iupac-name-to-smiles (iupac)
   (#"parseToSmiles" *nts* iupac))
