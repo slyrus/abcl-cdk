@@ -71,5 +71,8 @@
            #:get-atom-atom-mapping
 
            #:get-atom-container-exact-mass
-           #:get-atom-container-natural-mass))
+           #:get-atom-container-natural-mass
+
+           #:keep-atoms
+           #:copy-atom-container))
 

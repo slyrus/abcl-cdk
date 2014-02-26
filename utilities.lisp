@@ -42,6 +42,7 @@
 (jimport |org.openscience.cdk| |CDKConstants|)
 (jimport |org.openscience.cdk.config| |Isotopes|)
 (jimport |org.openscience.cdk.interfaces| |IPseudoAtom|)
+(jimport |org.openscience.cdk| |AtomContainer|)
 (jimport |org.openscience.cdk.graph| |ShortestPaths|)
 (jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
 
@@ -164,3 +165,16 @@
 
 (defun atom-container-set-atom-containers (acs)
   (items (#"atomContainers" acs)))
+
+(defun keep-atoms (ac atoms-to-keep)
+  "Remove all atoms other than those specified in the list
+atoms-to-keep (and their associated bonds) from ac."
+  (mapcar (lambda (x) (#"removeAtomAndConnectedElectronContainers" ac x))
+          (remove-if-not (lambda (x) (member x atoms-to-keep))
+                         (atoms ac)))
+  ac)
+
+(defun copy-atom-container (ac)
+  "Create a (shallow) copy of an atom container."
+  (java:jnew |AtomContainer| ac))
+
