@@ -108,3 +108,10 @@
 
 (mapcar #'get-atom-atom-mapping (items (#"atoms" *but-2-ene*)))
 
+(defparameter *iso-fac* (java:jstatic "getInstance" |Isotopes|))
+(defparameter *butane* (read-smiles-string "CCCC"))
+(defparameter *butane-mf* (java:jstatic "getMolecularFormula" |MolecularFormulaManipulator| *butane*))
+
+;; (#"getIsotopeCount" *butane-mf*)
+;; (#"getIsotope" *iso-fac* "C" 12)
+;; (#"getIsotopeCount" *butane-mf* (#"getIsotope" *iso-fac* "C" 12))
