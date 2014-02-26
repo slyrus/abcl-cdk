@@ -4,8 +4,12 @@
 
 (cl:in-package :abcl-cdk-examples)
 
-(jimport |org.openscience.cdk.geometry.cip| |CIPTool|)
 (jimport |java.awt| |Color|)
+
+(jimport |org.openscience.cdk.geometry.cip| |CIPTool|)
+(jimport |org.openscience.cdk.config| |Isotopes|)
+(jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
+
 
 (defun example-file (name)
   (merge-pathnames name abcl-cdk-examples-config:*base-directory*))
