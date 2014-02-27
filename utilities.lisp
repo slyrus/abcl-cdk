@@ -170,8 +170,8 @@
   "Remove all atoms other than those specified in the list
 atoms-to-keep (and their associated bonds) from ac."
   (mapcar (lambda (x) (#"removeAtomAndConnectedElectronContainers" ac x))
-          (remove-if-not (lambda (x) (member x atoms-to-keep))
-                         (atoms ac)))
+          (remove-if (lambda (x) (member x atoms-to-keep :test 'equal))
+                     (atoms ac)))
   ac)
 
 (defun copy-atom-container (ac)
