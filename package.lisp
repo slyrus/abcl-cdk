@@ -74,5 +74,6 @@
            #:get-atom-container-natural-mass
 
            #:keep-atoms
+           #:remove-atoms
            #:copy-atom-container))
 

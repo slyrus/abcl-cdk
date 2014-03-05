@@ -175,6 +175,14 @@
 (defun atom-container-set-atom-containers (acs)
   (items (#"atomContainers" acs)))
 
+(defun remove-atoms (ac atoms-to-remove)
+  "Remove all atoms other specified in the list atoms-to-remove (and
+their associated bonds) from ac."
+  (mapcar (lambda (x) (#"removeAtomAndConnectedElectronContainers" ac x))
+          (remove-if-not (lambda (x) (member x atoms-to-remove :test 'equal))
+                         (atoms ac)))
+  ac)
+
 (defun keep-atoms (ac atoms-to-keep)
   "Remove all atoms other than those specified in the list
 atoms-to-keep (and their associated bonds) from ac."
