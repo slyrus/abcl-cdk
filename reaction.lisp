@@ -29,6 +29,20 @@
 
 (cl:in-package :abcl-cdk)
 
+(jimport |org.openscience.cdk| |Reaction|)
+(jimport |org.openscience.cdk| |ReactionSet|)
+
+(defun make-reaction (id reactants products agents)
+  (let ((rxn (java:jnew |Reaction|)))
+    (java:jcall "setID" rxn id)
+    (loop for r in reactants
+       do (java:jcall "addReactant" rxn r))
+    (loop for p in products
+       do (java:jcall "addProduct" rxn p))
+    (loop for a in agents
+       do (java:jcall "addAgent" rxn a))
+    rxn))
+
 (defun reactants (reaction)
   (atom-container-set-atom-containers (#"getReactants" reaction)))
 
@@ -37,3 +51,13 @@
 
 (defun agents (reaction)
   (atom-container-set-atom-containers (#"getAgents" reaction)))
+
+(defun make-reaction-set (id reaction-list)
+  (let ((rxn-set (java:jnew |ReactionSet|)))
+    (java:jcall "setID" rxn-set id)
+    (loop for r in reaction-list
+       do (java:jcall "addReaction" rxn-set r))
+    rxn-set))
+
+(defun reactions (reaction-set)
+  (items (#"reactions" reaction-set)))
