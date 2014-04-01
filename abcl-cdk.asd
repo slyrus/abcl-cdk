@@ -27,7 +27,8 @@
    (:file "geometry")
    (:file "render")
    (:file "inchi")
-   (:file "reaction")))
+   (:file "reaction")
+   (:file "opsin")))
 
 (cl:defpackage #:abcl-cdk-config (:export #:*base-directory*))
 
