@@ -56,6 +56,14 @@
            #:mol-to-pdf
            #:*background-color*
            #:*default-bond-color*
+
+           #:*default-molecule-width*
+           #:*default-molecule-height*
+           #:*default-molecule-margin*
+           #:*default-molecule-x-margin*
+           #:*default-molecule-y-margin*
+           #:*default-molecule-angle*
+           #:*default-molecule-flip*
            
            #:prepare-atom-container-for-rendering
            #:flip-atoms-around-bond
@@ -73,7 +81,23 @@
            #:get-atom-container-exact-mass
            #:get-atom-container-natural-mass
 
+           #:get-molecular-formula
+
            #:keep-atoms
            #:remove-atoms
-           #:copy-atom-container))
+           #:copy-atom-container
+
+           ;; REACTIONs
+           #:make-reaction
+           #:reactants
+           #:agents
+           #:products
+
+           ;; REACTION-SETs
+           #:make-reaction-set
+           #:reactions))
+
+(cl:defpackage :abcl-cdk-opsin
+  (:use :common-lisp :abcl-cdk)
+  (:export #:parse-iupac-name-to-smiles))
 
