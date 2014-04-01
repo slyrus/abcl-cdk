@@ -1,25 +1,16 @@
 
-(cl:defpackage :abcl-cdk-opsin
-  (:use :common-lisp :abcl-cdk))
+(cl:defpackage :abcl-cdk-opsin-examples
+  (:use :cl :abcl-cdk :abcl-cdk-opsin))
 
-(cl:in-package :abcl-cdk-opsin)
+(cl:in-package :abcl-cdk-opsin-examples)
 
-;; NameToStructure nts = NameToStructure.getInstance();
-;; String smiles = nts.parseToSmiles("acetonitrile");
-
-(jimport |uk.ac.cam.ch.wwmm.opsin| |NameToStructure|)
-(jimport |org.openscience.cdk.iupac.parser| |NomParser|)
 (jimport |org.openscience.cdk.isomorphism| |UniversalIsomorphismTester|)
 
-(defparameter *nts* (java:jstatic "getInstance" |NameToStructure|))
-
-(defun parse-iupac-name-to-smiles (iupac)
-  (#"parseToSmiles" *nts* iupac))
-
-(mol-to-svg (read-smiles-string
-             (parse-iupac-name-to-smiles
-              "(3,3-dimethyl-7-oxo-6-[(2-phenylacetyl)amino]-4-thia-1-azabicyclo[3.2.0]heptane-2- carboxylic acid)"))
-            "penicillin-g.svg")
+(mol-to-svg
+ (read-smiles-string
+  (parse-iupac-name-to-smiles
+   "(3,3-dimethyl-7-oxo-6-[(2-phenylacetyl)amino]-4-thia-1-azabicyclo[3.2.0]heptane-2- carboxylic acid)"))
+ "penicillin-g.svg")
 
 (defparameter *caffeine-from-smiles*
   (read-smiles-string "CN1C=NC2=C1C(=O)N(C(=O)N2C)C"))
