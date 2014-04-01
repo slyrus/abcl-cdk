@@ -48,6 +48,7 @@
 (jimport |org.openscience.cdk| |AtomContainer|)
 (jimport |org.openscience.cdk.graph| |ShortestPaths|)
 (jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
+(jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
 
 (jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
 (jimport |org.openscience.cdk.tools.manipulator| |AtomContainerManipulator|)
@@ -171,6 +172,10 @@
                                  (* h-count *h-1-natural-mass*)
                                  0)))
                  (+ h-mass (#"getNaturalMass" *isotopes* a))))))
+
+(defun get-molecular-formula (ac)
+  (java:jstatic "getString" |MolecularFormulaManipulator|
+   (java:jstatic "getMolecularFormula" |MolecularFormulaManipulator| ac)))
 
 (defun atom-container-set-atom-containers (acs)
   (items (#"atomContainers" acs)))
