@@ -30,7 +30,11 @@
 (cl:in-package :abcl-cdk)
 
 (jimport |java.awt| |Color|)
+(jimport |java.lang| |String|)
 (jimport |javax.vecmath| |Vector2d|)
+(jimport |java.io| |ByteArrayOutputStream|)
+
+(jimport |org.openscience.cdk.interfaces| |IAtom|)
 
 (jimport |org.openscience.cdk| |Atom|)
 (jimport |org.openscience.cdk.graph| |ConnectivityChecker|)
@@ -110,15 +114,29 @@
                 java:+true+)
       )))
 
+(defun draw-atom-container-to-svg-stream (mol stream width height x-margin y-margin)
+  (let ((graphics (java:jnew |SVGGraphics2D| stream
+                             (java:jnew |Dimension| width height))))
+    (with-graphics (graphics)
+      (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin))))
+
+(defun draw-atom-container-to-svg-string (mol width height x-margin y-margin &key (trim-header t))
+  (let ((str (java:jnew |ByteArrayOutputStream|)))
+    (draw-atom-container-to-svg-stream mol
+                                       str
+                                       width height x-margin y-margin)
+    (let ((jstr (java:jnew |String| (#"toByteArray" str) "UTF-8")))
+      (if trim-header
+          (java:jobject-lisp-value (#"substring" jstr 39))
+          (java:jobject-lisp-value jstr)))))
+
 (defun draw-atom-container-to-svg (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
                               :if-exists :supersede
                               :element-type :default)
-    (let ((graphics (java:jnew |SVGGraphics2D|
-                               (#"getWrappedOutputStream" out-stream)
-                               (java:jnew |Dimension| width height))))
-      (with-graphics (graphics)
-        (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
+    (draw-atom-container-to-svg-stream mol
+                                       (#"getWrappedOutputStream" out-stream)
+                                       width height x-margin y-margin)))
 
 (defun draw-atom-container-to-pdf (mol pathname width height x-margin y-margin)
   (with-open-file (out-stream pathname :direction :output
