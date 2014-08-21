@@ -45,6 +45,8 @@
 (jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator$DefaultBondColor|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BackgroundColor|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$FitToScreen|)
+(jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BondLength|)
 
 (jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
 (jimport |org.freehep.graphicsio| |PageConstants|)
@@ -65,9 +67,11 @@
          (java:jnew |BasicBondGenerator|)
          (java:jnew |BasicAtomGenerator|)))
 
+
+(defparameter *font-manager* (java:jnew |AWTFontManager|))
 (defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
                                                    *renderer-generators*
-                                                   (java:jnew |AWTFontManager|)))
+                                                   *font-manager*))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
   (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| ac)
@@ -83,6 +87,7 @@
 (defparameter *default-bond-color* (java:jfield |Color| "black"))
 (defparameter *scene-background-color* nil)
 (defparameter *graphics-background-color* nil)
+(defparameter *scene-bond-length* 20)
 
 (defmacro with-graphics ((graphics) &body body)
   `(progn
@@ -92,11 +97,16 @@
 
 (defun mol-to-graphics (mol renderer graphics x1 y1 x2 y2 x-margin y-margin)
   (let ((*scene-background-color* (or *scene-background-color* *background-color*))
-        (*graphics-background-color* (or *graphics-background-color* *background-color*)))
-    (#"set" (#"getRenderer2DModel" renderer)
+        (*graphics-background-color* (or *graphics-background-color* *background-color*))
+        (model (#"getRenderer2DModel" renderer)))
+    (when *scene-bond-length*
+      (#"set" model
+              (java:jclass |BasicSceneGenerator$BondLength|)
+              (java:jnew "java.lang.Double" *scene-bond-length*)))
+    (#"set" model
             (java:jclass |BasicSceneGenerator$BackgroundColor|)
             *scene-background-color*)
-    (#"set" (#"getRenderer2DModel" renderer)
+    (#"set" model
             (java:jclass |BasicBondGenerator$DefaultBondColor|)
             *default-bond-color*)
     (let ((draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
@@ -162,8 +172,25 @@
     (draw-atom-container-to-svg mol pathname width height x-margin y-margin)
     pathname))
 
-(defun mol-to-pdf (mol pathname &key (width 512) (height 512) (margin 0)
-                                     (x-margin margin) (y-margin margin) (angle 0d0) flip)
+
+(defun mol-to-svg-string (mol &key (width *default-molecule-width*)
+                                   (height *default-molecule-height*)
+                                   (margin *default-molecule-margin*)
+                                   (x-margin (or *default-molecule-x-margin* margin))
+                                   (y-margin (or *default-molecule-y-margin* margin))
+                                   (angle *default-molecule-angle*)
+                                   (flip *default-molecule-flip*))
+  (let ((mol (#"clone" mol)))
+    (prepare-atom-container-for-rendering mol :angle angle :flip flip)
+    (draw-atom-container-to-svg-string mol width height x-margin y-margin)))
+
+(defun mol-to-pdf (mol pathname &key (width *default-molecule-width*)
+                                     (height *default-molecule-height*)
+                                     (margin *default-molecule-margin*)
+                                     (x-margin (or *default-molecule-x-margin* margin))
+                                     (y-margin (or *default-molecule-y-margin* margin))
+                                     (angle *default-molecule-angle*)
+                                     (flip *default-molecule-flip*))
   (let ((mol (#"clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
     (draw-atom-container-to-pdf mol pathname width height x-margin y-margin)
