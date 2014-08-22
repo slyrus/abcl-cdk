@@ -214,3 +214,87 @@
                  (mol-to-graphics mol *atom-container-renderer* graphics 0 y-offset
                                   (1- width) (1- (+ y-offset mol-height)) x-margin y-margin)))))))
   pathname)
+
+
+#|
+
+final long[] labels = Canon.label(m, GraphUtil.toAdjList(m));
+ 
+IAtom[] atoms = AtomContainerManipulator.getAtomArray(m);
+IBond[] bonds = AtomContainerManipulator.getBondArray(m);
+ 
+// atoms don't know their index
+for (int i = 0; i < labels.length; i++)
+  atoms[i].setProperty("rank", labels);
+  
+// sort atoms and bonds (ensure neighbours are provided in the same order)
+Arrays.sort(atoms, new Comparator<IAtom>() {
+    @Override public int compare(IAtom a, IAtom b) {
+        return a.getProperty("rank", Long.class)
+                .compareTo(a.getProperty("rank", Long.class));
+    }
+});
+Arrays.sort(bonds, new Comparator<IBond>() {
+    @Override public int compare(IBond a, IBond b) {
+        long a1 = a.getAtom(0).getProperty("rank");
+        long a2 = a.getAtom(1).getProperty("rank");
+        long b1 = b.getAtom(0).getProperty("rank");
+        long b2 = b.getAtom(1).getProperty("rank");
+        int cmp = Longs.compare(Math.min(a1, a2), Math.min(b1, b2));
+        return cmp != 0 ? cmp : Longs.compare(Math.max(a1, a2), Math.max(b1, b2)); 
+    }
+});
+ 
+// set the new orderings
+m.setAtoms(atoms);
+m.setBonds(bonds);
+ 
+// clean up
+for (IAtom a : m.atoms()) {
+    a.removeProperty("rank");
+    if (a.getProperties().isEmpty())
+        a.setProperties(null);
+        }
+|#
+
+(jimport |org.openscience.cdk.graph.invariant| |Canon|)
+(jimport |org.openscience.cdk.graph| |GraphUtil|)
+(jimport |org.openscience.cdk.tools.manipulator| |AtomContainerManipulator|)
+
+
+(defun get-bond-ranks (b)
+  (mapcar (lambda (x) (#"getProperty" x "rank"))
+          (atoms b)))
+
+(defun reorder-atom-container-atoms-and-bonds (ac)
+  (let ((labels (jarray->list
+                 (java:jstatic "label" |Canon|
+                               ac
+                               (java:jstatic-raw "toAdjList" |GraphUtil| ac)))))
+    (let ((atoms (java:jstatic-raw "getAtomArray" |AtomContainerManipulator| ac))
+          (bonds (java:jstatic-raw "getBondArray" |AtomContainerManipulator| ac)))
+      (loop for i below (length labels)
+         for atom = (java:jarray-ref atoms i)
+         do (#"setProperty" atom "rank" i))
+      
+      (let ((new-atom-list
+             (java:jnew-array-from-list |IAtom| (sort (jarray->list atoms) #'<
+                                                      :key (lambda (x) (#"getProperty" x "rank"))))))
+        (#"setAtoms" ac new-atom-list))
+      
+      (let ((new-bond-list
+             (java:jnew-array-from-list |IBond| (sort (jarray->list bonds) #'<
+                                                      :key (lambda (x) (apply #'max (get-bond-ranks x)))))))
+        (#"setBonds" ac new-bond-list))
+      
+      ;; clean up
+      (loop for i below (length labels)
+         for atom = (java:jarray-ref atoms i)
+         do (#"removeProperty" atom "rank")
+           
+         ;; FIXME this breaks things!!
+           #+nil
+           (when (#"isEmpty" (#"getProperties" atom))
+             (#"setProperties" atom java:+null+))))
+    ac))
+
