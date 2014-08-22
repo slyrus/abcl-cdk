@@ -43,7 +43,7 @@
 (mol-to-svg
  (read-smiles-string
   (parse-iupac-name-to-smiles
-   "benzo[1′′,2′′:3,4;4′′,5′′:3′,4′]dicyclobuta[1,2-b:1′,2′-c′]difuran"))
+   "benzo[1'',2'':3,4;4'',5'':3',4']dicyclobuta[1,2-b:1',2'-c']difuran"))
  "difuran.svg")
 
 (mol-to-svg
