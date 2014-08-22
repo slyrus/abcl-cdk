@@ -5,10 +5,14 @@
 (cl:in-package :abcl-cdk-examples)
 
 (jimport |java.awt| |Color|)
+(jimport |java.io| |FileWriter|)
 
 (jimport |org.openscience.cdk.geometry.cip| |CIPTool|)
 (jimport |org.openscience.cdk.config| |Isotopes|)
 (jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
+(jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
+(jimport |org.openscience.cdk.modeling.builder3d| |ModelBuilder3D|)
+(jimport |org.openscience.cdk.io| |CMLWriter|)
 
 
 (defun example-file (name)
@@ -115,3 +119,23 @@
 ;; (#"getIsotopeCount" *butane-mf*)
 ;; (#"getIsotope" *iso-fac* "C" 12)
 ;; (#"getIsotopeCount" *butane-mf* (#"getIsotope" *iso-fac* "C" 12))
+
+
+(let ((mb3d (java:jstatic "getInstance" |ModelBuilder3D| (java:jstatic "getInstance" |DefaultChemObjectBuilder|)))
+      (ac (abcl-cdk:copy-atom-container *butane*)))
+  (let ((ac3d (#"generate3DCoordinates" mb3d ac java:+false+)))
+    (let* ((f (java:jnew |FileWriter| "molecule.cml"))
+           (cmlw (java:jnew |CMLWriter| f)))
+      (#"write" cmlw ac3d)
+      (#"close" cmlw))
+ ;; * <pre>
+ ;; *   FileWriter output = new FileWriter("molecule.cml");
+ ;; *   CMLWriter cmlwriter = new CMLWriter(output);
+ ;; *   cmlwriter.write(molecule);
+ ;; *   cmlwriter.close();
+ ;; * </pre>
+
+
+    ac3d))
+
+
