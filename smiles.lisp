@@ -47,7 +47,8 @@
   (java:jstatic "absolute" |SmilesGenerator|))
 
 (defun read-smiles-string (smiles-string)
-  (#"parseSmiles" *smiles-parser* smiles-string))
+  (when smiles-string
+    (#"parseSmiles" *smiles-parser* smiles-string)))
 
 (defun write-smiles-string (atom-container)
   (#"createSMILES" *smiles-generator* atom-container))
