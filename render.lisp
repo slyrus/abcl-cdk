@@ -55,8 +55,8 @@
 (jimport |org.openscience.cdk.renderer.visitor| |AWTDrawVisitor|)
 (jimport |org.openscience.cdk.layout| |StructureDiagramGenerator|)
 
-(jimport |java.awt| |Rectangle|)
 (jimport |java.awt| |Dimension|)
+(jimport |java.awt| |Rectangle|)
 (jimport |java.awt.geom| |Rectangle2D$Double|)
 
 ;;
@@ -74,14 +74,16 @@
                                                    *font-manager*))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
-  (#"generateCoordinates" (java:jnew |StructureDiagramGenerator| ac)
-                          (java:jnew (java:jconstructor |Vector2d| 2)
-                                     (cos angle) (sin angle)))
+  (let ((sdg (java:jnew |StructureDiagramGenerator| ac)))
+    (#"generateCoordinates" sdg
+                            (java:jnew (java:jconstructor |Vector2d| 2)
+                                       (cos angle) (sin angle))))
   (case flip
     (:vertical (flip-atom-container-vertical ac))
     (:horizontal (flip-atom-container-horizontal ac))
     (:both (flip-atom-container-vertical ac)
-           (flip-atom-container-horizontal ac))))
+           (flip-atom-container-horizontal ac)))
+  ac)
 
 (defparameter *background-color* (java:jfield |Color| "white"))
 (defparameter *default-bond-color* (java:jfield |Color| "black"))
