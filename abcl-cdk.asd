@@ -2,6 +2,7 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (cl:require 'abcl-contrib)
   (cl:require 'abcl-asdf)
+  (cl:require 'jss)
   (cl:require 'extensible-sequences)
   (cl:require 'java-collections))
 
@@ -14,7 +15,7 @@
   ((:mvn "org.freehep/freehep-graphics2d" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.2.1")
-   (:mvn "org.openscience.cdk/cdk-bundle/1.5.6-SNAPSHOT" :repository nil)
+   (:mvn "org.openscience.cdk/cdk-bundle/1.5.9-SNAPSHOT" :repository nil)
    (:mvn "uk.ac.cam.ch.opsin/opsin-snapshot" :version "2.0")
    (:mvn "dk.brics.automaton/automaton")
    (:mvn "xom/xom" :version "1.2.5")
