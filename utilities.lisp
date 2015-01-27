@@ -29,6 +29,9 @@
 
 (cl:in-package :abcl-cdk)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (set-dispatch-macro-character #\# #\" 'jss::read-invoke))
+
 (defmacro jimport (java-package class &optional package)
   `(eval-when (:compile-toplevel :load-toplevel :execute)
     (defparameter ,(apply #'intern class
