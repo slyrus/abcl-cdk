@@ -15,7 +15,7 @@
   ((:mvn "org.freehep/freehep-graphics2d" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.2.1")
    (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.2.1")
-   (:mvn "org.openscience.cdk/cdk-bundle/1.5.9-SNAPSHOT" :repository nil)
+   (:mvn "org.openscience.cdk/cdk-bundle/1.5.11-SNAPSHOT" :repository nil)
    (:mvn "uk.ac.cam.ch.opsin/opsin-core" :version "2.0-SNAPSHOT")
    (:mvn "dk.brics.automaton/automaton")
    (:mvn "xom/xom" :version "1.2.5")
