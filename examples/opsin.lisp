@@ -25,7 +25,7 @@
 (mol-to-svg *caffeine-from-smiles* "caffeine-from-iupac.svg")
 
 (defparameter *universal-isomorphism-tester* (java:jnew |UniversalIsomorphismTester|))
-(#"isIsomorph" *universal-isomorphism-tester* *caffeine-from-smiles* *caffeine-from-iupac*)
+(java:jcall "isIsomorph" *universal-isomorphism-tester* *caffeine-from-smiles* *caffeine-from-iupac*)
 
 
 (defparameter *hairy-macrocycle*
