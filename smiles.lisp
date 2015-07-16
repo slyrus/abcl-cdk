@@ -51,8 +51,8 @@
     (#"parseSmiles" *smiles-parser* smiles-string)))
 
 (defun write-smiles-string (atom-container)
-  (#"createSMILES" *smiles-generator* atom-container))
+  (#"create" *smiles-generator* atom-container))
 
 (defun write-chiral-smiles-string (atom-container)
-  (#"createSMILES" *isomeric-smiles-generator* atom-container))
+  (#"create" *isomeric-smiles-generator* atom-container))
 
