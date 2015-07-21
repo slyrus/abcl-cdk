@@ -182,7 +182,7 @@
                                      (y-margin (or *default-molecule-y-margin* margin))
                                      (angle *default-molecule-angle*)
                                      (flip *default-molecule-flip*))
-  (let ((mol (#"clone" mol)))
+  (let ((mol (java:jcall "clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
     (draw-atom-container-to-svg mol pathname width height x-margin y-margin)
     pathname))
@@ -194,7 +194,7 @@
                                    (y-margin (or *default-molecule-y-margin* margin))
                                    (angle *default-molecule-angle*)
                                    (flip *default-molecule-flip*))
-  (let ((mol (#"clone" mol)))
+  (let ((mol (java:jcall "clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
     (draw-atom-container-to-svg-string mol width height x-margin y-margin)))
 
@@ -205,7 +205,7 @@
                                      (y-margin (or *default-molecule-y-margin* margin))
                                      (angle *default-molecule-angle*)
                                      (flip *default-molecule-flip*))
-  (let ((mol (#"clone" mol)))
+  (let ((mol (java:jcall "clone" mol)))
     (prepare-atom-container-for-rendering mol :angle angle :flip flip)
     (draw-atom-container-to-pdf mol pathname width height x-margin y-margin)
     pathname))
@@ -221,7 +221,7 @@
                (java:jstatic "partitionIntoMolecules" |ConnectivityChecker| ac))))
     (let ((height (* height (length mols))))
       (let ((graphics (java:jnew |SVGGraphics2D|
-                                 (#"getWrappedOutputStream" out-stream)
+                                 (java:jcall "getWrappedOutputStream" out-stream)
                                  (java:jnew |Dimension| width height))))
         (with-graphics (graphics)
           (loop for mol in mols
@@ -292,7 +292,7 @@ for (IAtom a : m.atoms()) {
 
 
 (defun get-bond-ranks (b)
-  (mapcar (lambda (x) (#"getProperty" x "rank"))
+  (mapcar (lambda (x) (java:jcall "getProperty" x "rank"))
           (atoms b)))
 
 (defun reorder-atom-container-atoms-and-bonds (ac)
@@ -304,26 +304,26 @@ for (IAtom a : m.atoms()) {
           (bonds (java:jstatic-raw "getBondArray" |AtomContainerManipulator| ac)))
       (loop for i below (length labels)
          for atom = (java:jarray-ref atoms i)
-         do (#"setProperty" atom "rank" i))
+         do (java:jcall "setProperty" atom "rank" i))
       
       (let ((new-atom-list
              (java:jnew-array-from-list |IAtom| (sort (jarray->list atoms) #'<
-                                                      :key (lambda (x) (#"getProperty" x "rank"))))))
-        (#"setAtoms" ac new-atom-list))
+                                                      :key (lambda (x) (java:jcall "getProperty" x "rank"))))))
+        (java:jcall "setAtoms" ac new-atom-list))
       
       (let ((new-bond-list
              (java:jnew-array-from-list |IBond| (sort (jarray->list bonds) #'<
                                                       :key (lambda (x) (apply #'max (get-bond-ranks x)))))))
-        (#"setBonds" ac new-bond-list))
+        (java:jcall "setBonds" ac new-bond-list))
       
       ;; clean up
       (loop for i below (length labels)
          for atom = (java:jarray-ref atoms i)
-         do (#"removeProperty" atom "rank")
+         do (java:jcall "removeProperty" atom "rank")
            
          ;; FIXME this breaks things!!
            #+nil
-           (when (#"isEmpty" (#"getProperties" atom))
-             (#"setProperties" atom java:+null+))))
+           (when (java:jcall "isEmpty" (java:jcall "getProperties" atom))
+             (java:jcall "setProperties" atom java:+null+))))
     ac))
 

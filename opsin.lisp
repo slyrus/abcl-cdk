@@ -7,5 +7,5 @@
 (defparameter *nts* (java:jstatic "getInstance" |NameToStructure|))
 
 (defun parse-iupac-name-to-smiles (iupac)
-  (#"parseToSmiles" *nts* iupac))
+  (java:jcall "parseToSmiles" *nts* iupac))
 
