@@ -29,10 +29,13 @@
 
 (cl:in-package :abcl-cdk)
 
+(jimport |javax.vecmath| |Point2d|)
+
 (jimport |org.openscience.cdk.interfaces| |ITetrahedralChirality|)
 (jimport |org.openscience.cdk.interfaces| |ITetrahedralChirality$Stereo|)
 (jimport |org.openscience.cdk.interfaces| |IBond|)
 (jimport |org.openscience.cdk.interfaces| |IBond$Stereo|)
+(jimport |org.openscience.cdk.geometry| |GeometryTools|)
 
 ;;;; Some lisp-side constants
 (defconstant +clockwise+ (java:jfield |ITetrahedralChirality$Stereo| "CLOCKWISE"))
@@ -157,3 +160,9 @@
                       (java:jfield "y" (#"getPoint2d" atom)) by))))
       (flip-atom-list-bonds bond-list)
       ac)))
+
+(defun rotate-atom-container (ac angle)
+  (java:jstatic "rotate" |GeometryTools|
+                ac
+                (java:jnew (java:jconstructor |Point2d| 2) 0d0 0d0)
+                angle))
