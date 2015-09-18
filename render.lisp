@@ -78,6 +78,8 @@
     (#"generateCoordinates" sdg
                             (java:jnew (java:jconstructor |Vector2d| 2)
                                        (cos angle) (sin angle))))
+  (when angle
+    (rotate-atom-container ac angle))
   (case flip
     (:vertical (flip-atom-container-vertical ac))
     (:horizontal (flip-atom-container-horizontal ac))
