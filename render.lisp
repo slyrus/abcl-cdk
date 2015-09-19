@@ -78,6 +78,8 @@
 ;;
 ;; Atom Container Rendering Support
 
+(defparameter *renderer-font* (java:jnew |Font| "Verdana" (java:jfield |Font| "PLAIN") 12))
+
 (defparameter *renderer-generators*
   (jlist (java:jnew |BasicSceneGenerator|)
          (java:jnew |StandardGenerator| *renderer-font*)))
@@ -87,8 +89,6 @@
 (defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
                                                    *renderer-generators*
                                                    *font-manager*))
-
-(defparameter *renderer-font* (java:jnew |Font| "Verdana" (java:jfield |Font| "PLAIN") 12))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
   (let ((sdg (java:jnew |StructureDiagramGenerator| ac)))
