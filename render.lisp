@@ -120,6 +120,8 @@
 
 (defparameter *wave-spacing* 2)
 
+(defparameter *visibilty* (java:jstatic "iupacRecommendationsWithoutTerminalCarbon" |SymbolVisibility|))
+
 (defun mol-to-graphics (mol renderer graphics x1 y1 x2 y2 x-margin y-margin)
   (let ((*scene-background-color* (or *scene-background-color* *background-color*))
         (*graphics-background-color* (or *graphics-background-color* *background-color*))
@@ -133,7 +135,7 @@
             *scene-background-color*)
     (#"set" model
             (java:jclass |StandardGenerator$Visibility|)
-            (java:jstatic "iupacRecommendations" |SymbolVisibility|))
+            *visibilty*)
     (#"set" model
             (java:jclass |StandardGenerator$AtomColor|)
             (java:jnew |CDK2DAtomColors|))
