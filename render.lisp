@@ -30,23 +30,39 @@
 (cl:in-package :abcl-cdk)
 
 (jimport |java.awt| |Color|)
+(jimport |java.awt| |Font|)
+(jimport |java.awt| |Font$PLAIN|)
 (jimport |java.lang| |String|)
+(jimport |java.lang| |Double|)
 (jimport |javax.vecmath| |Vector2d|)
 (jimport |java.io| |ByteArrayOutputStream|)
 
 (jimport |org.openscience.cdk.interfaces| |IAtom|)
 
+(jimport |org.openscience.cdk.graph.invariant| |Canon|)
+(jimport |org.openscience.cdk.graph| |GraphUtil|)
+(jimport |org.openscience.cdk.tools.manipulator| |AtomTypeManipulator|)
+(jimport |org.openscience.cdk.tools.manipulator| |AtomContainerManipulator|)
+
 (jimport |org.openscience.cdk| |Atom|)
 (jimport |org.openscience.cdk.graph| |ConnectivityChecker|)
 
 (jimport |org.openscience.cdk.renderer| |AtomContainerRenderer|)
-(jimport |org.openscience.cdk.renderer.generators| |BasicAtomGenerator|)
-(jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator|)
-(jimport |org.openscience.cdk.renderer.generators| |BasicBondGenerator$DefaultBondColor|)
+(jimport |org.openscience.cdk.renderer| |SymbolVisibility|)
+(jimport |org.openscience.cdk.renderer.color| |CDK2DAtomColors|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BackgroundColor|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$FitToScreen|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BondLength|)
+
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardGenerator|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardGenerator$AtomColor|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardGenerator$HashSpacing|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardGenerator$Visibility|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardGenerator$WaveSpacing|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardAtomGenerator|)
+(jimport |org.openscience.cdk.renderer.generators.standard| |StandardBondGenerator|)
+
 
 (jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
 (jimport |org.freehep.graphicsio| |PageConstants|)
@@ -64,14 +80,15 @@
 
 (defparameter *renderer-generators*
   (jlist (java:jnew |BasicSceneGenerator|)
-         (java:jnew |BasicBondGenerator|)
-         (java:jnew |BasicAtomGenerator|)))
+         (java:jnew |StandardGenerator| *renderer-font*)))
 
 
 (defparameter *font-manager* (java:jnew |AWTFontManager|))
 (defparameter *atom-container-renderer* (java:jnew |AtomContainerRenderer|
                                                    *renderer-generators*
                                                    *font-manager*))
+
+(defparameter *renderer-font* (java:jnew |Font| "Verdana" (java:jfield |Font| "PLAIN") 12))
 
 (defun prepare-atom-container-for-rendering (ac &key (angle 0d0) flip)
   (let ((sdg (java:jnew |StructureDiagramGenerator| ac)))
@@ -99,6 +116,10 @@
     ,@body
     (#"endExport" ,graphics)))
 
+(defparameter *hash-spacing* 2)
+
+(defparameter *wave-spacing* 2)
+
 (defun mol-to-graphics (mol renderer graphics x1 y1 x2 y2 x-margin y-margin)
   (let ((*scene-background-color* (or *scene-background-color* *background-color*))
         (*graphics-background-color* (or *graphics-background-color* *background-color*))
@@ -106,13 +127,23 @@
     (when *scene-bond-length*
       (#"set" model
               (java:jclass |BasicSceneGenerator$BondLength|)
-              (java:jnew "java.lang.Double" *scene-bond-length*)))
+              (java:jnew |Double| *scene-bond-length*)))
     (#"set" model
             (java:jclass |BasicSceneGenerator$BackgroundColor|)
             *scene-background-color*)
     (#"set" model
-            (java:jclass |BasicBondGenerator$DefaultBondColor|)
-            *default-bond-color*)
+            (java:jclass |StandardGenerator$Visibility|)
+            (java:jstatic "iupacRecommendations" |SymbolVisibility|))
+    (#"set" model
+            (java:jclass |StandardGenerator$AtomColor|)
+            (java:jnew |CDK2DAtomColors|))
+    (#"set" model
+            (java:jclass |StandardGenerator$HashSpacing|)
+            (java:jnew |Double| *hash-spacing*))
+    (#"set" model
+            (java:jclass |StandardGenerator$WaveSpacing|)
+            (java:jnew |Double| *wave-spacing*))
+
     (let ((draw-visitor (java:jnew |AWTDrawVisitor| graphics)))
       (let ((bounds (java:jnew |Rectangle| x1 y1 x2 y2)))
         (#"setup" renderer mol bounds)
@@ -287,11 +318,6 @@ for (IAtom a : m.atoms()) {
         a.setProperties(null);
         }
 |#
-
-(jimport |org.openscience.cdk.graph.invariant| |Canon|)
-(jimport |org.openscience.cdk.graph| |GraphUtil|)
-(jimport |org.openscience.cdk.tools.manipulator| |AtomContainerManipulator|)
-
 
 (defun get-bond-ranks (b)
   (mapcar (lambda (x) (java:jcall "getProperty" x "rank"))
