@@ -35,8 +35,9 @@
   (java:jstatic "getInstance" |InChIGeneratorFactory|))
 
 (defun get-inchi (atom-container)
-  (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container)))
-    (#"getInchi" gen)))
+  (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container "")))
+    (values (#"getInchi" gen)
+            (#"getAuxInfo" gen))))
 
 (defun get-inchi-key (atom-container)
   (let* ((gen (#"getInChIGenerator" *inchi-factory* atom-container)))
