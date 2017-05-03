@@ -114,7 +114,16 @@
   `(progn
     (#"startExport" ,graphics)
     ,@body
-    (#"endExport" ,graphics)))
+
+    ;; the following call results in a
+    ;; java.nio.channels.ClosedChannelException. I have no idea
+    ;; why. Comment this out for now.
+    #+nil
+    (#"endExport" ,graphics)
+
+    ;; and replace with the following:
+    (#"dispose" ,graphics)
+    (#"writeTrailer" ,graphics)))
 
 (defparameter *hash-spacing* 2)
 
