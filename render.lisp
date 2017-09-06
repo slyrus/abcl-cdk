@@ -186,18 +186,16 @@
                                        width height x-margin y-margin)))
 
 (defun draw-atom-container-to-pdf (mol pathname width height x-margin y-margin)
-  (with-open-file (out-stream pathname :direction :output
-                              :if-exists :supersede
-                              :element-type :default)
+  (let ((out-file (java:jnew "java.io.File" (namestring pathname))))
     (let ((prop (java:jstatic "getDefaultProperties" |PDFGraphics2D|)))
-        (#"setProperty" prop
-                        (java:jfield |PDFGraphics2D| "PAGE_SIZE")
-                        (java:jfield |PageConstants| "A6"))
-        (#"setProperty" prop
-                        (java:jfield |PDFGraphics2D| "ORIENTATION")
-                        (java:jfield |PageConstants| "LANDSCAPE")))
+      (#"setProperty" prop
+                      (java:jfield |PDFGraphics2D| "PAGE_SIZE")
+                      (java:jfield |PageConstants| "A6"))
+      (#"setProperty" prop
+                      (java:jfield |PDFGraphics2D| "ORIENTATION")
+                      (java:jfield |PageConstants| "LANDSCAPE")))
     (let ((graphics (java:jnew |PDFGraphics2D|
-                               (#"getWrappedOutputStream" out-stream)
+                               out-file
                                (java:jnew |Dimension| width height))))
       (with-graphics (graphics)
         (mol-to-graphics mol *atom-container-renderer* graphics 0 0 (1- width) (1- height) x-margin y-margin)))))
