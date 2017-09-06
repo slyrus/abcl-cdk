@@ -11,17 +11,20 @@
   :author "Cyrus Harmon"
   :serial t
   :depends-on (alexandria)
+  :defsystem-depends-on (asdf-mvn-module)
   :components
-  ((:mvn "org.freehep/freehep-graphics2d" :version "2.2.1")
-   (:mvn "org.freehep/freehep-graphicsio-pdf" :version "2.2.1")
-   (:mvn "org.freehep/freehep-graphicsio-svg" :version "2.2.1")
-   (:mvn "org.openscience.cdk/cdk-bundle/1.5.14-SNAPSHOT" :repository nil)
-   (:mvn "uk.ac.cam.ch.opsin/opsin-core" :version "2.0-SNAPSHOT")
-   (:mvn "dk.brics.automaton/automaton")
-   (:mvn "xom/xom" :version "1.2.5")
-   (:mvn "commons-io/commons-io")
-   (:mvn "commons-cli/commons-cli")
-   (:mvn "log4j/log4j")
+  ((:mvn-module cdk
+                :dependencies
+                ("org.freehep/freehep-graphics2d/2.4"
+                 "org.freehep/freehep-graphicsio-pdf/2.4"
+                 "org.freehep/freehep-graphicsio-svg/2.4"
+                 "org.openscience.cdk/cdk-bundle/2.1-SNAPSHOT"
+                 "uk.ac.cam.ch.opsin/opsin-core/2.3.1"
+                 "dk.brics.automaton/automaton/1.11-8"
+                 "xom/xom/1.2.5"
+                 "commons-io/commons-io/2.5"
+                 "commons-cli/commons-cli/1.4"
+                 "log4j/log4j/1.2.17"))
    (:file "package")
    (:file "utilities")
    (:file "smiles")
