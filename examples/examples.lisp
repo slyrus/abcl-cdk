@@ -91,8 +91,8 @@
   (describe
    (java:jstatic "getCIPChirality" |CIPTool| mol tc)))
 
-(mol-to-pdf *l-valine* "l-valine.pdf")
-(mol-to-pdf *d-valine* "d-valine.pdf")
+(mol-to-svg *d-valine* (example-file "d-valine.svg"))
+(mol-to-pdf *d-valine* (example-file "d-valine.pdf"))
 
 (defparameter *but-2-ene* (read-smiles-string "CC=CC"))
 
