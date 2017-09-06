@@ -109,6 +109,7 @@
   (mol-to-svg *ticagrelor* (example-file "ticagrelor-inverted.svg")))
 
 (defparameter *but-2-ene* (read-smiles-string "C[C:1]=[C:2]C"))
+(mol-to-svg *but-2-ene* (example-file "but-2-ene.svg") :width 128 :height 128)
 
 (mapcar #'get-atom-atom-mapping (items (#"atoms" *but-2-ene*)))
 
