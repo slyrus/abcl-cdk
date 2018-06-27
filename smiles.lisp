@@ -57,3 +57,6 @@
 (defun write-chiral-smiles-string (atom-container)
   (#"create" *isomeric-smiles-generator* atom-container))
 
+(defun read-reaction-smiles-string (smiles-string)
+  (when smiles-string
+    (#"parseReactionSmiles" *smiles-parser* smiles-string)))
