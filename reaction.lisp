@@ -29,9 +29,6 @@
 
 (cl:in-package :abcl-cdk)
 
-(jimport |org.openscience.cdk| |Reaction|)
-(jimport |org.openscience.cdk| |ReactionSet|)
-
 (defun make-reaction (id reactants products agents)
   (let ((rxn (java:jnew |Reaction|)))
     (java:jcall "setID" rxn id)

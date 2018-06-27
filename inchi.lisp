@@ -29,8 +29,6 @@
 
 (cl:in-package :abcl-cdk)
 
-(jimport |org.openscience.cdk.inchi| |InChIGeneratorFactory|)
-
 (defparameter *inchi-factory*
   (java:jstatic "getInstance" |InChIGeneratorFactory|))
 

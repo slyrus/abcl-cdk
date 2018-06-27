@@ -29,13 +29,6 @@
 
 (cl:in-package :abcl-cdk)
 
-(jimport |org.openscience.cdk| |Atom|)
-
-(jimport |org.openscience.cdk.smiles| |SmilesParser|)
-(jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
-(jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
-(jimport |org.openscience.cdk.silent| |SilentChemObjectBuilder|)
-
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
              (java:jstatic "getInstance" |SilentChemObjectBuilder|)))

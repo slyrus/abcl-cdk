@@ -29,14 +29,6 @@
 
 (cl:in-package :abcl-cdk)
 
-(jimport |javax.vecmath| |Point2d|)
-
-(jimport |org.openscience.cdk.interfaces| |ITetrahedralChirality|)
-(jimport |org.openscience.cdk.interfaces| |ITetrahedralChirality$Stereo|)
-(jimport |org.openscience.cdk.interfaces| |IBond|)
-(jimport |org.openscience.cdk.interfaces| |IBond$Stereo|)
-(jimport |org.openscience.cdk.geometry| |GeometryTools|)
-
 ;;;; Some lisp-side constants
 (defconstant +clockwise+ (java:jfield |ITetrahedralChirality$Stereo| "CLOCKWISE"))
 (defconstant +anti-clockwise+ (java:jfield |ITetrahedralChirality$Stereo| "ANTI_CLOCKWISE"))

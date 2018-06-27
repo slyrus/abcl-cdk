@@ -90,6 +90,7 @@
                  "commons-cli/commons-cli/1.4"
                  "log4j/log4j/1.2.17"))
    (:file "package")
+   (:file "jimport")
    (:file "utilities")
    (:file "smiles")
    (:file "geometry")

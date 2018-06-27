@@ -32,33 +32,6 @@
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (set-dispatch-macro-character #\# #\" 'jss::read-invoke))
 
-(defmacro jimport (java-package class &optional package)
-  `(eval-when (:compile-toplevel :load-toplevel :execute)
-    (defparameter ,(apply #'intern class
-                          (when package (list package)))
-      (concatenate 'string (symbol-name (quote ,java-package))
-                   "."
-                   (symbol-name (quote ,class))))))
-
-(jimport |java.util| |Vector|)
-(jimport |java.util| |Arrays|)
-(jimport |java.lang| |Integer|)
-(jimport |org.openscience.cdk| |CDKConstants|)
-(jimport |org.openscience.cdk.interfaces| |IAtom|)
-(jimport |org.openscience.cdk.interfaces| |IBond|)
-(jimport |org.openscience.cdk.config| |Isotopes|)
-(jimport |org.openscience.cdk.interfaces| |IPseudoAtom|)
-(jimport |org.openscience.cdk| |AtomContainer|)
-(jimport |org.openscience.cdk.graph| |ShortestPaths|)
-(jimport |org.openscience.cdk.ringsearch| |AllRingsFinder|)
-(jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
-
-(jimport |org.openscience.cdk.tools.manipulator| |MolecularFormulaManipulator|)
-(jimport |org.openscience.cdk.tools.manipulator| |AtomContainerManipulator|)
-
-(jimport |org.openscience.cdk.graph.invariant| |Canon|)
-(jimport |org.openscience.cdk.graph| |GraphUtil|)
-
 (defun jlist (&rest initial-contents)
   (sequence:make-sequence-like
    (java:jnew |Vector|) (length initial-contents)
