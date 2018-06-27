@@ -34,10 +34,11 @@
 (jimport |org.openscience.cdk.smiles| |SmilesParser|)
 (jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
 (jimport |org.openscience.cdk| |DefaultChemObjectBuilder|)
+(jimport |org.openscience.cdk.silent| |SilentChemObjectBuilder|)
 
 (defparameter *smiles-parser*
   (java:jnew |SmilesParser|
-             (java:jstatic "getInstance" |DefaultChemObjectBuilder|)))
+             (java:jstatic "getInstance" |SilentChemObjectBuilder|)))
 
 (defparameter *smiles-generator*
   (java:jnew |SmilesGenerator|))
