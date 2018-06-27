@@ -144,8 +144,15 @@
 (let ((mol (read-smiles-string "CC(C)[C](C(=O)O)N")))
   (let ((dg (let ((dg (java:jnew |DepictionGenerator|)))
               (java:jcall "withAtomColors"
-                          (java:jcall "withSize" dg 128 128)))))
+                          (java:jcall "withSize" dg -1 -1)))))
     (let ((depiction (java:jcall "depict" dg mol)))
       (java:jcall "writeTo" depiction (namestring (example-file "foo.svg")))
       (java:jcall "writeTo" depiction (namestring (example-file "foo.pdf"))))))
+
+(let ((mol (read-smiles-string "C*.C*.C1=CC=CC=C1C=2C(C=CN3C2C=*C(=*3)C**)=O.C* |$;R2;;R3;;;;;;;;;;;;;;W;;A;;X;R4;;;R1$,m:0:5.4.9.8.7.6,2:7.6.5.4.9.8,24:4.9.8.7.6.5,Sg:n:20:m:ht| US 2007/0129372 (I)")))
+  (let ((dg (let ((dg (java:jnew |DepictionGenerator|)))
+              (java:jcall "withAtomColors"
+                          (java:jcall "withSize" dg -1 -1)))))
+    (let ((depiction (java:jcall "depict" dg mol)))
+      (java:jcall "writeTo" depiction (namestring (example-file "foo.svg"))))))
 
