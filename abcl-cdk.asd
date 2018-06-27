@@ -71,6 +71,7 @@
                  "org.openscience.cdk/cdk-renderbasic/2.2-SNAPSHOT"
                  "org.openscience.cdk/cdk-renderextra/2.2-SNAPSHOT"
                  "org.openscience.cdk/cdk-sdg/2.2-SNAPSHOT"
+                 "org.openscience.cdk/cdk-silent/2.2-SNAPSHOT"
                  "org.openscience.cdk/cdk-signature/2.2-SNAPSHOT"
                  "org.openscience.cdk/cdk-smarts/2.2-SNAPSHOT"
                  "org.openscience.cdk/cdk-smiles/2.2-SNAPSHOT"
