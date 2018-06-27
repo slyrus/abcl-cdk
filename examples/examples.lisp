@@ -139,4 +139,13 @@
 
     ac3d))
 
+(jimport |org.openscience.cdk.depict| |DepictionGenerator|)
+
+(let ((mol (read-smiles-string "CC(C)[C](C(=O)O)N")))
+  (let ((dg (let ((dg (java:jnew |DepictionGenerator|)))
+              (java:jcall "withAtomColors"
+                          (java:jcall "withSize" dg 128 128)))))
+    (let ((depiction (java:jcall "depict" dg mol)))
+      (java:jcall "writeTo" depiction (namestring (example-file "foo.svg")))
+      (java:jcall "writeTo" depiction (namestring (example-file "foo.pdf"))))))
 
