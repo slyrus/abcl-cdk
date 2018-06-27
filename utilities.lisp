@@ -161,11 +161,14 @@
 (defun get-atom-container-exact-mass (ac)
   (configure-atom-container ac)
   (loop for a in (atoms ac)
-     sum (let ((h-count (#"getImplicitHydrogenCount" a)))
-               (let ((h-mass (if h-count
-                                 (* h-count *h-1-exact-mass*)
-                                 0)))
-                 (+ h-mass (#"getExactMass" a))))))
+     sum (let*((mass (#"getExactMass" a))
+               (h-count (#"getImplicitHydrogenCount" a)))
+           (let ((h-mass (if h-count
+                             (* h-count *h-1-exact-mass*)
+                             0)))
+             (if mass
+                 (+ h-mass mass)
+                 0)))))
 
 (defun get-atom-container-natural-mass (ac)
   (configure-atom-container ac)
