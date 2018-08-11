@@ -66,7 +66,7 @@
 (jimport |org.openscience.cdk.renderer| |SymbolVisibility|)
 (jimport |org.openscience.cdk.renderer.font| |AWTFontManager|)
 (jimport |org.openscience.cdk.renderer.visitor| |AWTDrawVisitor|)
-(jimport |org.openscience.cdk.rendreer.color| |CDK2DAtomColors|)
+(jimport |org.openscience.cdk.renderer.color| |CDK2DAtomColors|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$BackgroundColor|)
 (jimport |org.openscience.cdk.renderer.generators| |BasicSceneGenerator$FitToScreen|)
