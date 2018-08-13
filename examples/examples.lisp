@@ -21,6 +21,37 @@
 (defparameter *valine* (read-smiles-string "CC(C)[C](C(=O)O)N"))
 (mol-to-svg *valine* (example-file "valine.svg"))
 
+(depict-to-svg *valine* (example-file "valine-depict.svg")
+               :depiction-generator
+               (java:jcall "withZoom"
+                           (java:jcall "withOuterGlowHighlight"
+                                       (java:jcall "withBackgroundColor"
+                                                   (java:jcall "withAtomColors"
+                                                               (abcl-cdk::default-depiction-generator)
+                                                               (java:jnew abcl-cdk::*inverse-colorer-class*))
+                                                   (java:jfield |Color| "black")))
+                           6.0))
+
+(defparameter *valine-svg-string*
+  (abcl-cdk::depict-to-svg-string
+   *valine*
+   :depiction-generator
+   (java:jcall "withZoom"
+               (java:jcall "withOuterGlowHighlight"
+                           (java:jcall "withBackgroundColor"
+                                       (java:jcall "withAtomColors"
+                                                   (abcl-cdk::default-depiction-generator)
+                                                   (java:jnew abcl-cdk::*inverse-colorer-class*))
+                                       (java:jfield |Color| "black")))
+               6.0)))
+
+
+(defparameter *xml*
+  (abcl-cdk::parse-svg-string *valine-svg-string*))
+
+(let ((sink (cxml:make-string-sink))) (stp:serialize (stp:nth-child 1 *xml*) sink) (sax:end-document sink))
+
+
 (defparameter *l-valine* (read-smiles-string "CC(C)[C@@H](C(=O)O)N"))
 (write-smiles-string *l-valine*)
 (write-chiral-smiles-string *l-valine*)
