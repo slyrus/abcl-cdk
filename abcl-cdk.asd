@@ -97,7 +97,9 @@
    (:file "render")
    (:file "inchi")
    (:file "reaction")
-   (:file "opsin")))
+   (:file "opsin")
+   (:file "depict")
+   (:file "svg")))
 
 (cl:defpackage #:abcl-cdk-config (:export #:*base-directory*))
 
