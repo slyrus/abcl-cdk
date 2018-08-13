@@ -90,4 +90,5 @@
 (jimport |org.openscience.cdk.smiles| |SmilesGenerator|)
 (jimport |org.openscience.cdk.silent| |SilentChemObjectBuilder|)
 
+(jimport |org.openscience.cdk.depict| |Depiction|)
 (jimport |org.openscience.cdk.depict| |DepictionGenerator|)

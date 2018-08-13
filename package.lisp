@@ -95,7 +95,11 @@
 
            ;; REACTION-SETs
            #:make-reaction-set
-           #:reactions))
+           #:reactions
+
+           ;; new(-ish) CDK Depcit routines
+           #:depict-to-svg
+           #:*inverse-colorer-class*))
 
 (cl:defpackage :abcl-cdk-opsin
   (:use :common-lisp :abcl-cdk)
